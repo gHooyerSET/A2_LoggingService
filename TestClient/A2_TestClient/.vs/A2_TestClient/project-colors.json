@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "ec25d07e-dafe-4a37-8a66-09cb3f2c96a6": {
+      "ProjectGuid": "ec25d07e-dafe-4a37-8a66-09cb3f2c96a6",
+      "DisplayName": "A2_TestClient",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
