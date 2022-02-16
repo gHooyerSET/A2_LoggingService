@@ -6,7 +6,6 @@
 
 # IMPORTS
 import threading
-import os.path
 from os import path
 
 # Declare the thread lock
