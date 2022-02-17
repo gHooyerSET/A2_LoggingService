@@ -1,0 +1,10 @@
+Log Format :
+#0[(-lg)isLog] : bool isLog : Message header that is true if message is a log
+#1[(-dt)Date] : string date : A string containing the date (dd/mm/yy)
+#2[(-tm)Time] : string time : A string containing the time (hh:mm:ss)
+#3[(-dn)Device Name] : string devName : A string containg the device/computer name
+#4[(-an)Application Name] : string appName : A string containing the application source
+#5[(-pi)Process ID] : int pId : An interger containg the Process ID
+#6[(-el)Error Level] : int errLvl : An integer denoting the level and severity of error :
+	(0-10,000 Debug)(0-20,000 Info)(0-30,000 Warning)(0-40,000 Error)(0-50,000 Fatal)
+#7[(-ms)Message] : string msg : A string containing the log message
