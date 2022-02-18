@@ -1,5 +1,5 @@
 Log Format :
-#0[(-lg)isLog] : bool isLog : Message header that is true if message is a log
+#0[(-lg)logId] : bool isLog : Message header that is true if message is a log
 #1[(-dt)Date] : string date : A string containing the date (dd/mm/yy)
 #2[(-tm)Time] : string time : A string containing the time (hh:mm:ss)
 #3[(-dn)Device Name] : string devName : A string containg the device/computer name
