@@ -18,7 +18,12 @@ class ArgParser():
     port = DEFAULT_PORT
     maxClients = DEFAULT_MAX_CLIENTS
     fileName = DEFAULT_FILENAME
+    
+    staticmethod
+    def  printHelpMessage():
+        print("")
 
+    classmethod
     def parseArgs(self,*args):
         length = len(args[ARGS_ARRAY_OFFSET])
         for i in range(length):
@@ -39,3 +44,7 @@ class ArgParser():
                     except:
                         # Display an error on failure
                         print("Failed to parse max clients.\n")
+                elif(switch == "-h"):
+                    ArgParser.printHelpMessage()
+
+    

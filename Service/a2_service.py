@@ -11,28 +11,12 @@ import socket
 import threading
 import fileHandler
 import argParser
+import clientHandler
 
-
-def clientHandler(sock, parser):
-    fileName = parser.fileName
-    msg = ""
-    # Code to read the server message and parse to the input
-    # As well as setting msg and filename will go here    
-    # Receive the client's log message
-    msg = sock.recv(1024)
-    # Send a response message
-    sock.send("Log entry created.")
-    # Then close the socket
-    sock.close()
-    # Print a disconnect message
-    print("Disconnected from client.")
-    # Create file write thread
-    writeThread = threading.Thread(target = fileHandler.write, args = (fileName, msg))
-    # Start the thread
-    writeThread.start()
-    # There's no need to join as the thread will terminate on its own
-    # and we don't want to wait for it to finish
-
+# FUNCTION : startServer(parser)
+# DESCRIPTION : Starts an instance of the logger server.
+# PARAMETERS : parser - argParser.ArgParser - an instance of an argParser.ArgParser object
+# RETURNS : N/A
 def startServer(parser):
     # TITLE : Python TCP Server
     # AUTHOR : O'Reilly Textbook
@@ -60,17 +44,20 @@ def startServer(parser):
             # Display a connected message
             print(str(address) + "connected\n")
             # Create the new client thread
-            clientThread = threading.thread(target = clientHandler, args = (cSock, parser))
+            clientThread = threading.Thread(target = clientHandler.handleClient, args = (cSock, parser))
             # Start the client thread
             clientThread.start()
     except:
-        printf("Server error.")
+        print("Server error.")
     finally:
         # Close the server socket on exit
         sock.close()
 
 
-
+# FUNCTION : main
+# DESCRIPTION : Calls functions and methods to run the program
+# PARAMETERS : N/A
+# RETURNS : N/A
 def main():
     # Create our ArgParser object
     parser = argParser.ArgParser()
