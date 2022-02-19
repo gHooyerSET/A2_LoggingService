@@ -13,22 +13,15 @@ using System.Text;
 
 namespace A2_TestClient
 {
-    // Enumerations for Log Field positions
-    enum LogField
+    enum ErrorCode
     {
-        LOG,
-        DATE,
-        TIME,
-        DEVICE_NAME,
-        APPLICATION_NAME,
-        PROCESS_ID,
-        ERROR_LEVEL,
-        MESSAGE
+        DEFAULT = -1,
+        MAX = 50000,
     }
 
     public class Logger
     {
-        public static string fieldTags { get; private set; } = "-lg -dt -tm -dn -an -pi -el -ms"; // Contains all field tags
+        public static string fieldTags { get; private set; } = "-dt -tm -dn -an -pi -el -ms"; // Contains all field tags
         public string logId { get; private set; } // Message containing the log id, an MD5 hash of the device name and process ID
         public string date { get; private set; }  // A string containing the date (dd/mm/yy)
         public string time { get; private set; }  // A string containing the time (hh:mm:ss)
@@ -38,6 +31,45 @@ namespace A2_TestClient
         public int errorLvl { get; private set; } // An integer denoting the level and severity of error : (0-10,000 Debug)(0-20,000 Info)(0-30,000 Warning)(0-40,000 Error)(0-50,000 Fatal)
         public string msg { get; private set; } // A string containing the log message
 
+        /*
+        * METHOD :Logger()
+        *
+        * DESCRIPTION : Default constructor with no Error Lvl or Message Arguments, they will be set tio default
+        */
+        public Logger()
+        {
+            MD5 md5 = MD5.Create();
+            // Create logId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
+            // Referenced https://stackoverflow.com/a/24031467
+            string createLogId = appName + pId.ToString();
+            var logIdBytes = new ASCIIEncoding().GetBytes(createLogId);
+            var logIdHash = md5.ComputeHash(logIdBytes);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < logIdHash.Length; i++)
+            {
+                sb.Append(logIdHash[i].ToString("X2"));
+            }
+            logId = sb.ToString();
+
+            // Get todays date and time
+            date = DateTime.Now.ToString("dd/mm/yyyy");
+            time = DateTime.Now.ToString("hh:mm:ss");
+
+            // Get device name
+            devName = System.Environment.MachineName;
+
+            // Get app name
+            appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+
+            // get process ID
+            pId = System.Diagnostics.Process.GetCurrentProcess().Id;
+
+            // set error lvl to default
+            errorLvl = (int)ErrorCode.DEFAULT;
+
+            // get message
+            msg = "None";
+        }
         /*
         * METHOD :Logger()
         *
@@ -72,9 +104,19 @@ namespace A2_TestClient
             pId = System.Diagnostics.Process.GetCurrentProcess().Id;
 
             // get error lvl
+            if(getErrorLvl > (int)ErrorCode.MAX || getErrorLvl < (int)ErrorCode.DEFAULT)
+            {
+                // Set to default if error level out of bounds
+                getErrorLvl = (int)ErrorCode.DEFAULT;
+            }
             errorLvl = getErrorLvl;
 
             // get message
+            if(string.IsNullOrWhiteSpace(getMsg))
+            {
+                // Set to default if string is empty
+                getMsg = "None";
+            }
             msg = getMsg;
         }
 
@@ -128,33 +170,54 @@ namespace A2_TestClient
             // Build string
             StringBuilder logSb = new StringBuilder();
             logSb.Append(@"{");
-            if (fields.Contains("-lg"))
-            {
-                logSb.AppendFormat("\"clientID\":{0},", logger.logId);
-            }
+            logSb.AppendFormat("\"clientID\":{0},", logger.logId);
             if (fields.Contains("-dt"))
             {
                 logSb.AppendFormat("\"date\":{0},", logger.date);
+            }
+            else
+            {
+                logSb.AppendFormat("\"date\":None,");
             }
             if (fields.Contains("-tm"))
             {
                 logSb.AppendFormat("\"time\":{0},", logger.time);
             }
+            else
+            {
+                logSb.AppendFormat("\"time\":None,");
+            }
             if (fields.Contains("-dn"))
             {
                 logSb.AppendFormat("\"devName\":{0},", logger.devName);
+            }
+            else
+            {
+                logSb.AppendFormat("\"devName\":None,");
             }
             if (fields.Contains("-pi"))
             {
                 logSb.AppendFormat("\"appName\":{0},", logger.appName);
             }
+            else
+            {
+                logSb.AppendFormat("\"appName\":None,");
+            }
             if (fields.Contains("-el"))
             {
                 logSb.AppendFormat("\"pId\":{0},", logger.pId);
             }
+            else
+            {
+                logSb.AppendFormat("\"pId\":None,");
+            }
             if (fields.Contains("-ms"))
             {
                 logSb.AppendFormat("\"msg\":{0},", logger.msg);
+            }
+            else
+            {
+                logSb.AppendFormat("\"msg\":None,");
             }
             // Remove final comma
             logSb.Length--;
