@@ -4,6 +4,8 @@ import fileHandler
 import argParser
 from datetime import datetime
 
+SECONDS_PER_HOUR = 3600
+SECONDS_PER_MINUTE = 60
 DEFAULT_RATE = 5.0
 DEFAULT_PERIOD = 10.0
 CLIENT_NOT_FOUND = -1
@@ -82,12 +84,20 @@ class Client():
         timePassed = current - client.lastCheck
         # Set the lastCheck to the current time.
         client.lastCheck = current
+        # Add an amount to the allowance equal to to the # of seconds passed
+        # multiplied by the ratio of the rate to the period
         client.allowance += float(timePassed.seconds) * (Client.rate / Client.period)
+        # If the allowance is greater than the rate
         if (client.allowance > Client.rate):
+            # We reset it to the rate to throttle the connection
             client.allowance = Client.rate
+        # If the allowance is greater than the cutoff (1 second)
         if (client.allowance > ALLOWANCE_CUTTOFF_SECONDS):
+            # Set the return value to true, the bucket isn't full
             retValue = True
+            # Then subtract the cutoff from the allowance
             client.allowance -= ALLOWANCE_CUTTOFF_SECONDS
+        # Return our retValue
         return retValue
 
 

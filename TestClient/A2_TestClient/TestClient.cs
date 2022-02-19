@@ -11,6 +11,11 @@ namespace A2_TestClient
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("{0}", Logger.WriteCustomLog("-lg -dt -tm", 1, "hello"));
+            Console.WriteLine("{0}", Logger.WriteLog(90000,"Error! Something went wrong!"));
+            Tests.TestFields(500, 10);
+            Console.ReadLine();
+            //Client.Send(Logger.WriteLog(1, "hello"));
         }
     }
 }
