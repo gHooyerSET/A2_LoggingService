@@ -11,7 +11,7 @@ def sendMessage():
     # Connect to the remote host and port
     sock.connect(("127.0.0.1", 8500))
     # Send a request to the host
-    sock.send((sys.argv[1] + "\n").encode())
+    sock.send(("{\"clientID\":\"CFCD204495D565EF66E7DFF9F98764DA\",\"date\":\"18-24-2022\",\"time\":\"02:24:32\",\"devName\":\"DESKTOP-3C8HQUC\",\"appName\":\"A2_TestClient\",\"pId\":38452,\"errorLvl\":1,\"msg\":\"hello\"}").encode())
 
     # Get the host's response, no more than, say, 1,024 bytes
     response_data = sock.recv(1024)
@@ -23,20 +23,6 @@ def sendMessage():
     # Terminate
     sock.close(  )
 
-seed(int(sys.argv[4]))
-
-for i in range(int(sys.argv[5])):
-    
-    short = float(sys.argv[2])
-    long = float(sys.argv[3])
-    
-    if(random() > 0.5):
-        for i in range(int(sys.argv[4]):
-            sendMessage()
-            time.sleep(short)
-    else:
-        for i in range(int(sys.argv[4]):
-            sendMessage()
-            time.sleep(long)
+sendMessage()
 
     

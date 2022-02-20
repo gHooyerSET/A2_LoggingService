@@ -2,8 +2,6 @@ import socket
 import threading
 import fileHandler
 import argParser
-import json
-import time
 from datetime import datetime
 
 SECONDS_PER_HOUR = 3600
@@ -12,28 +10,15 @@ DEFAULT_RATE = 5.0
 DEFAULT_PERIOD = 10.0
 CLIENT_NOT_FOUND = -1
 ALLOWANCE_CUTTOFF_SECONDS = 1.0
-CLIENT_SESSION_TIMEOUT = 30.0
-TIME_BETWEEN_CLEANUP = 15
+
 clientList = []
 
-# NAME: Request
-# PURPOSE : Stores request data in an easy-to-reference object
-class Request():    
-    def __init__(self,clientID,date,time,devName,appName,pId,errorLvl,msg):
-        self.clientID = clientID
-        self.date = date
-        self.time = time
-        self.devName = devName
-        self.appName = appName
-        self.pId = pId
-        self.errorLvl = errorLvl
-        self.msg = msg
-
 class Client():
+
+    
     rate = DEFAULT_RATE
     period = DEFAULT_PERIOD
-    cleanupCheck = datetime.now()
-
+    
     # FUNCTION : __init__ (Constructor)
     # DESCRIPTION : Initializes an instance of the Client object
     # PARAMETERS : self - the instance of Client
@@ -52,8 +37,6 @@ class Client():
     @staticmethod
     def addClient(client):
         clientList.append(client)
-
-    
 
     # FUNCTION: findClient
     # DESCRIPTION: Finds an instance of a client with a matching clientID
@@ -117,33 +100,7 @@ class Client():
         # Return our retValue
         return retValue
 
-# FUNCTION : cleanClients()
-# DESCRIPTION : Watchdog timer that cleans up clients after a set amount of time
-#               since their last request
-# PARAMETERS : self - the instance of Client
-# RETURNS : N/A
-def cleanClients():   
-        # Get the current time
-        current = datetime.now()
-        print(Client.cleanupCheck)
-        print(current)
-        # Get the time passed
-        timePassed = current - Client.cleanupCheck        
-        # Debug
-        print(timePassed)
-        # If the time passed is >= the time between cleanups, clean up
-        if (float(timePassed.seconds) >= TIME_BETWEEN_CLEANUP):
-            # Set the cleanupCheck to the current time
-            Client.cleanupCheck = current
-            # Iterate through the client list
-            for client in clientList:
-                print(client.clientID)
-                # Now set timePassed to the client's value
-                timePassed = current - client.lastCheck
-                # If the client hasn't made a request in 30 seconds or more,
-                # close the session to save memory
-                if (float(timePassed.seconds) >= CLIENT_SESSION_TIMEOUT):
-                    clientList.remove(client)
+
 
 # FUNCTION : clientHandler
 # DESCRIPTION : Handles a client request.
@@ -153,42 +110,40 @@ def cleanClients():
 def handleClient(sock, parser):
     fileName = parser.fileName
     response = None
-    try:
-        # Code to read the server message and parse to the input
-        # As well as setting msg and filename will go here    
-        # Receive the client's log message
-        request = sock.recv(1024)
-        # Decode it
-        msg = request.decode()
-        # Create a request object from the received msg
-        # by first creating our dict via deserialzing the JSON string
-        request_dict = json.loads(msg)
-        # Then turn it into a Request object
-        request = Request(**request_dict)
-        # Get our client instance
-        client = Client.findClient(request.clientID)
-        # If the rate limiter returns true, write to the log
-        if Client.rateLimiter(client) == True:
-            # Then create our response
-            response = "Log entry created".encode()
-            # Create file write thread
-            writeThread = threading.Thread(target = fileHandler.resolveOutput, args = (parser,request, msg))
-            # Start the thread
-            writeThread.start()
-            # There's no need to join as the thread will terminate on its own
-            # and we don't want to wait for it to finish
-        else:
-            response = "Rate limited for client".encode()
-            print("Rate limited for Client " + client.clientID)
-        # Send a response message
-        sock.send(response)        
-        # Print a disconnect message
-        print("Disconnected from client.")
-    except Exception as e:
-        # If any operation fails, print our exception message
-        print("handleClient Error : " + e + "\n")
-    finally:
-        # Then close the socket
-        sock.close()
-    
+    # Code to read the server message and parse to the input
+    # As well as setting msg and filename will go here    
+    # Receive the client's log message
+    request = sock.recv(1024)
+    # Decode it
+    msg = request.decode()
+    # Then print it
+    print(msg)
+    # Parse the client ID here
+    clientID = msg
+    # Get our client instance
+    client = Client.findClient(clientID)
+
+    print(client.allowance)
+    print(client.lastCheck)
+
+    # If the rate limiter returns true, write to the log
+    if Client.rateLimiter(client) == True:
+        # Then create our response
+        response = "Log entry created".encode()
+        
+        writeThread = threading.Thread(target = fileHandler.write, args = (fileName, msg))
+        # Start the thread
+        writeThread.start()
+        # There's no need to join as the thread will terminate on its own
+        # and we don't want to wait for it to finish
+    else:
+        response = "Rate limited for client".encode()
+        print("Rate limited for client " + client.clientID)
+    # Send a response message
+    sock.send(response)
+    # Then close the socket
+    sock.close()
+    # Print a disconnect message
+    print("Disconnected from client.")
+    # Create file write thread
     

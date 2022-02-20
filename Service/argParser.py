@@ -6,30 +6,50 @@
 #               for the NAD Logging Service
 #               assignment.
 
+import string
+
+HELP_FILE_PATH = "help.txt"
 DEFAULT_PORT = 8500
 DEFAULT_FILENAME = "a2log.txt"
 DEFAULT_MAX_CLIENTS = 1024
+ARG_JSON = "json"
+ARG_SYSLOG = "syslog"
+MODE_JSON = 0
+MODE_SYSLOG = 1
+MODE_CUSTOM = 2
 INVALID_PORT = -1
 ARGS_ARRAY_OFFSET = 0
 ARG_OFFSET = 1
 
 class ArgParser():
 
+    displayedHelp = False
     port = DEFAULT_PORT
     maxClients = DEFAULT_MAX_CLIENTS
     fileName = DEFAULT_FILENAME
-    
+    mode = MODE_JSON
+    outFormat = []
+
     staticmethod
     def  printHelpMessage():
-        print("")
+        # Open the text file with help information
+        fHelp = open(HELP_FILE_PATH,"r")
+        # Read the text from the file
+        helpMsg = fHelp.read()
+        # Display the contents to the screen
+        print(helpMsg)
+        # Close the file
+        fHelp.close()
 
     classmethod
     def parseArgs(self,*args):
         length = len(args[ARGS_ARRAY_OFFSET])
         for i in range(length):
-            if(i != length - ARG_OFFSET):
-                switch = args[ARGS_ARRAY_OFFSET][i]
+            switch = args[ARGS_ARRAY_OFFSET][i]
+            # Check if we have 2 or more arguments or are at the 2nd last arguments
+            if(i < length - ARG_OFFSET and length != ARG_OFFSET):
                 arg = args[ARGS_ARRAY_OFFSET][i + ARG_OFFSET]
+                # Check for a custom port setting
                 if(switch == "-p"):
                     try:
                         # Try to parse the port
@@ -37,6 +57,7 @@ class ArgParser():
                     except :
                         # Display an error on failure
                         print("Failed to parse port.\n")
+                # Check for a custom # of max clients
                 elif(switch == "-c"):
                     try:
                         # Try to parse the maximum # of clients
@@ -44,7 +65,19 @@ class ArgParser():
                     except:
                         # Display an error on failure
                         print("Failed to parse max clients.\n")
-                elif(switch == "-h"):
+                # See if they desire to change the output filename
+                elif(switch == "-o"):
+                    # Set the filename to the arg
+                    self.fileName = arg
+                # Check for a format switch tag
+                elif(switch == "-f"):
+                    if (arg == "json"):
+                        # Set the output mode to JSON
+                        ArgParser.mode = MODE_JSON
+                    else:
+                        ArgParser.mode = MODE_CUSTOM
+                        ArgParser.outFormat = arg.split(' ')
+            # Check if the 'help message tag' was specified
+            if(switch == "-h"):
                     ArgParser.printHelpMessage()
-
-    
+                    ArgParser.displayedHelp = True
