@@ -8,21 +8,68 @@ namespace A2_TestClient
 {
     public static class Tests
     {
-        public static bool debugMode = false;
+        // debugMode = true: prints log instead of sending it to server
+        public static bool debugMode = false; 
 
         /*
-        * METHOD : TestFields()
+        * METHOD : CustomFields()
         *
-        * DESCRIPTION : Sends different combinations of our log fields
+        * DESCRIPTION : Sends custom combinations of valid inputted log fields
         * 
         * PARAMETERS : int delayTime : Time between each messsage in ms
         *              int numberOfMessages : Number of messages to send
         *
         * RETURNS :NA
         */
-        public static void TestValidFields(int delayTime, int numberOfMessages)
+        public static void CustomValidFields(string fieldTags, int errorLevel, string message)
         {
-            string[] tags = Logger.fieldTags.Split(' ');
+            // Send log
+            if (Tests.debugMode)
+            {
+                Console.WriteLine(Logger.WriteCustomValidLog(fieldTags, errorLevel, message));
+            }
+            else
+            {
+                Client.Send(Logger.WriteCustomValidLog(fieldTags, errorLevel, message));
+            }
+        }
+
+        /*
+        * METHOD : CustomInvalidFields()
+        *
+        * DESCRIPTION : Sends custom combinations of valid OR invalid inputted log fields
+        * 
+        * PARAMETERS : int delayTime : Time between each messsage in ms
+        *              int numberOfMessages : Number of messages to send
+        *
+        * RETURNS :NA
+        */
+        public static void CustomInvalidFields(string fieldTags, int errorLevel, string message)
+        {
+            // Send log
+            if (Tests.debugMode)
+            {
+                Console.WriteLine(Logger.WriteCustomInvalidLog(fieldTags, errorLevel, message));
+            }
+            else
+            {
+                Client.Send(Logger.WriteCustomInvalidLog(fieldTags, errorLevel, message));
+            }
+        }
+
+        /*
+        * METHOD : AllPermutatedFields()
+        *
+        * DESCRIPTION : Sends different permutations of inputted log fields
+        * 
+        * PARAMETERS : int delayTime : Time between each messsage in ms
+        *              int numberOfMessages : Total number of messages to send
+        *
+        * RETURNS :NA
+        */
+        public static void AllValidPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
+        {
+            string[] tags = inputTags.Split(' ');
             int numberOfTags = tags.Count();
             var rand = new Random();
             int numberOfFieldsToExlclude = 0;
@@ -32,21 +79,15 @@ namespace A2_TestClient
             foreach (var list in tagPermutations)
             {
                 System.Threading.Thread.Sleep(delayTime);
+
                 // Remove fields, increasing each permutation
                 for (int count = 0; count < numberOfFieldsToExlclude; count++)
                 {
                     list[count] = "";
                 }
 
-                // Send log
-                if(Tests.debugMode)
-                {
-                    Console.WriteLine(Logger.WriteCustomLog(string.Join("", list), -1, "Test"));
-                }
-                else
-                {
-                    Client.Send(Logger.WriteCustomLog(string.Join("", list), -1, "Test"));
-                }
+                //Send custom log
+                CustomValidFields(string.Join("", list), errorLevel, message);
 
                 numberOfFieldsToExlclude++;
 
@@ -58,6 +99,54 @@ namespace A2_TestClient
                 i++;
 
                 if(i == numberOfMessages)
+                {
+                    break;
+                }
+            }
+        }
+
+        /*
+        * METHOD : AllPermutatedFields()
+        *
+        * DESCRIPTION : Sends different permutations of valid OR invalid inputted log fields
+        * 
+        * PARAMETERS : int delayTime : Time between each messsage in ms
+        *              int numberOfMessages : Total number of messages to send
+        *
+        * RETURNS :NA
+        */
+        public static void CustomPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
+        {
+            string[] tags = inputTags.Split(' ');
+            int numberOfTags = tags.Count();
+            var rand = new Random();
+            int numberOfFieldsToExlclude = 0;
+            // Create a list with every permutaion of our field tags
+            IList<IList<string>> tagPermutations = Permute(tags);
+            int i = 0;
+            foreach (var list in tagPermutations)
+            {
+                System.Threading.Thread.Sleep(delayTime);
+
+                // Remove fields, increasing each permutation
+                for (int count = 0; count < numberOfFieldsToExlclude; count++)
+                {
+                    list[count] = "";
+                }
+
+                //Send custom log
+                CustomInvalidFields(string.Join("", list), errorLevel, message);
+
+                numberOfFieldsToExlclude++;
+
+                if (numberOfFieldsToExlclude == numberOfTags - 1)
+                {
+                    numberOfFieldsToExlclude = 0;
+                }
+
+                i++;
+
+                if (i == numberOfMessages)
                 {
                     break;
                 }
