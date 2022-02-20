@@ -137,7 +137,6 @@ def cleanClients():
             Client.cleanupCheck = current
             # Iterate through the client list
             for client in clientList:
-                print(client.clientID)
                 # Now set timePassed to the client's value
                 timePassed = current - client.lastCheck
                 # If the client hasn't made a request in 30 seconds or more,

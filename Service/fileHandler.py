@@ -21,7 +21,16 @@ TAG_DEVICE_NAME = "devName"
 TAG_APP_NAME = "appName"
 TAG_PID = "pId"
 TAG_ERROR_LEVEL = "errorLvl"
+TAG_ERROR_TYPE = "errorType"
 TAG_MESSAGE = "msg"
+#Log Levels
+LOGLEVEL_DEBUG_FLOOR    = 0
+LOGLEVEL_INFO_FLOOR     = 10000
+LOGLEVEL_WARNING_FLOOR  = 20000
+LOGLEVEL_ERROR_FLOOR    = 30000
+LOGLEVEL_FATAL_FLOOR    = 40000
+LOGLEVEL_CEILING        = 50000
+
 
 def resolveOutput(parser,request,msg):
     if(parser.mode == argParser.MODE_JSON):
@@ -29,10 +38,31 @@ def resolveOutput(parser,request,msg):
     else:
         msg = createOutput(parser,request)
         write(parser.fileName,msg)
+        
+def getErrorType(errorLvl):
+    retValue = ""
+    # Read the error level by range checking
+    # and set the retValue to the corresponding string
+    if(errorLvl >= LOGLEVEL_DEBUG_FLOOR and errorLvl < LOGLEVEL_INFO_FLOOR):
+        retValue = "Debug"
+    elif(errorLvl >= LOGLEVEL_INFO_FLOOR and errorLvl < LOGLEVEL_WARNING_FLOOR):
+        retValue = "Info"
+    elif(errorLvl >= LOGLEVEL_WARNING_FLOOR and errorLvl < LOGLEVEL_ERROR_FLOOR):
+        retValue = "Warning"
+    elif(errorLvl >= LOGLEVEL_ERROR_FLOOR and errorLvl < LOGLEVEL_FATAL_FLOOR):
+        retValue = "Error"
+    elif(errorLvl >= LOGLEVEL_FATAL_FLOOR and errorLvl < LOGLEVEL_CEILING):
+        retValue = "Error"
+    else:
+        retValue = "Unknown"
+    
+    return retValue
 
 def createOutput(parser,request):
     retValue = ""
+    # Iterate through each tag in the format
     for tag in parser.outFormat:
+        # Append the matching value to the tag
         if(tag == TAG_CLIENT_ID):
             retValue += str(request.clientID)
         elif(tag == TAG_DATE):
@@ -49,8 +79,12 @@ def createOutput(parser,request):
             retValue += str(request.errorLvl)
         elif(tag == TAG_MESSAGE):
             retValue += str(request.msg)
+        elif(tag == TAG_ERROR_TYPE):
+            retValue += getErrorType(request.errorLvl)
+        # If the 'tag' doesn't match anything, simply add it as text
         else:
             retValue += tag
+        # Add a space after each tag
         retValue += " "
     return retValue
 

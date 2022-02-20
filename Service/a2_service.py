@@ -50,7 +50,7 @@ def startServer(parser):
             # Accept the connection
             cSock, address = sock.accept( )
             # Display a connected message
-            print(str(address) + "connected\n")
+            print(str(address) + " connected.\n")
             # Create the new client thread
             clientThread = threading.Thread(target = clientHandler.handleClient, args = (cSock, parser))
             # Start the client thread

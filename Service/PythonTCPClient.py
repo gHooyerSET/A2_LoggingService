@@ -12,7 +12,7 @@ def sendMessage():
     sock.connect(("127.0.0.1", 8500))
     # Send a request to the host
     sock.send(("{\"clientID\":\"CFCD208495D565EF66E7DFF9F98764DA\",\"date\":\"18-24-2022\",\"time\":\"02:24:32\",\"devName\":\"DESKTOP-3C8HQUC\",\"appName\":\"A2_TestClient\",\"pId\":38452,\"errorLvl\":1,\"msg\":\"hello\"}").encode())
-
+    #sock.send(("A Bunch of junk!!!!").encode())
     # Get the host's response, no more than, say, 1,024 bytes
     response_data = sock.recv(1024)
 

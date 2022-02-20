@@ -16,6 +16,7 @@ Format: "switch" <argType>
 	Arguments:
 	json 	- Sets the message format to JSON
 	<string>- A whitespace delimited string of tags to create a custom output format
+-h			- Display the help menu. Does not start the server.
 
 ------------------
 
@@ -32,7 +33,9 @@ devName	 	- The name of the device that made the request
 appName		- The name of the application the request was created in
 pId			- The application's process ID
 errorLvl	- The error level of the log message
+errorType	- The error type (based on error level)
 msg			- A message related to the log entry as a string of text
+
 
 All tags should be entered as an argument after 
 
@@ -41,3 +44,16 @@ Example: "clientId date time errorLvl msg"
 This will create a log entry that looks like the following:
 
 "CFCD208495D565EF66E7DFF9F98764DA 18-24-2022 02:24:32 1 hello"
+
+------------------
+
+Error Levels
+
+Debug 	: 0 - 9,999
+Info  	: 10,000 - 19,999
+Warning : 20,000 - 29,999
+Error	: 30,000 - 39,999
+Fatal	: 40,000 - 50,000
+
+The higher the number, the higher severity / priority.
+This means a debug message of 10 has a higher priority than a debug message of 5, for example.
