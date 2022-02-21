@@ -67,8 +67,15 @@ namespace A2_TestClient
                             Console.WriteLine("Tests:\n");
                             Console.WriteLine("\t1 Custom Log\n");
                             Console.WriteLine("\t2 Custom Invalid Log\n");
-                            Console.WriteLine("\t3 All Valid Field Permutations\n");
-                            Console.WriteLine("\t4 Test All Invalid Log Field Permutations\n");
+                            Console.WriteLine("\t3 Custom Mixed Log\n");
+                            Console.WriteLine("\n");
+                            Console.WriteLine("\t4 Test All Valid Field Permutations\n");
+                            Console.WriteLine("\t5 Test All Invalid Log Field Permutations\n");
+                            Console.WriteLine("\t6 Test All Mixed Log Field Permutations\n");
+                            Console.WriteLine("\n");
+                            Console.WriteLine("\t7 Regular Valid Log\n");
+                            Console.WriteLine("\t8 Regular Invalid Log\n");
+                            Console.WriteLine("\t9 Regular Mixed Log\n");
                             Console.WriteLine("Select Test:");
                             switch (Console.ReadLine())
                             {
@@ -101,8 +108,22 @@ namespace A2_TestClient
                                     message = Console.ReadLine();
                                     Tests.CustomInvalidFields(fieldTags, errorLevel, message);
                                     break;
-                                /************************* Test All Valid Log Field Permutations **************************/
+                                /************************* Test Custom Mixed Log **************************/
                                 case "3":
+                                    Console.WriteLine("Field tags: \n\t(-dt)Date\n\t(-tm)Time\n\t(-dn)Device Name\n\t(-an)Application Name\n\t(-pi)Process ID\n\t(-el)Error Level\n\t(-ms)Message");
+                                    Console.WriteLine("Enter field tags: ");
+                                    fieldTags = "";
+                                    fieldTags = Console.ReadLine();
+                                    Console.WriteLine("Enter error level: ");
+                                    errorLevel = -1;
+                                    int.TryParse(Console.ReadLine(), out errorLevel);
+                                    Console.WriteLine("Enter message: ");
+                                    message = "";
+                                    message = Console.ReadLine();
+                                    Tests.CustomMixedFields(fieldTags, errorLevel, message);
+                                    break;
+                                /************************* Test All Valid Log Field Permutations **************************/
+                                case "4":
                                     Console.WriteLine("Enter delay time(ms): ");
                                     int delay = 0;
                                     int.TryParse(Console.ReadLine(), out delay);
@@ -114,7 +135,7 @@ namespace A2_TestClient
                                     break;
 
                                 /************************* Test Invalid Log Field Permutations **************************/
-                                case "4":
+                                case "5":
                                     Console.WriteLine("Enter delay time(ms): ");
                                     delay = 0;
                                     int.TryParse(Console.ReadLine(), out delay);
@@ -122,12 +143,78 @@ namespace A2_TestClient
                                     logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.AllInvalidPermutatedFields(delay, logsToSend, invalidLogger.invalidFieldTags, -1, "Test");
+                                    Tests.AllInvalidPermutatedFields(delay, logsToSend, InvalidLogger.invalidFieldTags, -1, "Test");
+                                    break;
+
+                                /************************* Test Mixed Field Permutations **************************/
+                                case "6":
+                                    Console.WriteLine("Enter delay time(ms): ");
+                                    delay = 0;
+                                    int.TryParse(Console.ReadLine(), out delay);
+                                    Console.WriteLine("Enter number of logs to send: ");
+                                    logsToSend = 0;
+                                    int.TryParse(Console.ReadLine(), out logsToSend);
+                                    Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
+                                    Tests.AllMixedPermutatedFields(delay, logsToSend, MixedLogger.fieldTags, -1, "Test");
+                                    break;
+
+                                /************************* Test Regular Valid Log **************************/
+                                case "7":
+                                    Console.WriteLine("Enter error level: ");
+                                    int.TryParse(Console.ReadLine(), out errorLevel);
+                                    Console.WriteLine("Enter message: ");
+                                    message = Console.ReadLine();
+
+                                    Logger logger = new Logger(errorLevel, message);
+                                    if (Tests.debugMode)
+                                    {
+                                        Console.WriteLine(Logger.WriteLog(errorLevel, message));
+                                    }
+                                    else
+                                    {
+                                        Client.Send(Logger.WriteLog(errorLevel, message));
+                                    }
+                                    break;
+
+                                /************************* Test Regular Invalid Log **************************/
+                                case "8":
+                                    Console.WriteLine("Enter error level: ");
+                                    int.TryParse(Console.ReadLine(), out errorLevel);
+                                    Console.WriteLine("Enter message: ");
+                                    message = Console.ReadLine();
+
+                                    InvalidLogger invalidLogger = new InvalidLogger(errorLevel, message);
+                                    if (Tests.debugMode)
+                                    {
+                                        Console.WriteLine(InvalidLogger.WriteLog(errorLevel, message));
+                                    }
+                                    else
+                                    {
+                                        Client.Send(InvalidLogger.WriteLog(errorLevel, message));
+                                    }
+                                    break;
+
+                                /************************* Test Regular Mixed Log **************************/
+                                case "9":
+                                    Console.WriteLine("Enter error level: ");
+                                    int.TryParse(Console.ReadLine(), out errorLevel);
+                                    Console.WriteLine("Enter message: ");
+                                    message = Console.ReadLine();
+
+                                    MixedLogger mixedLogger = new MixedLogger(errorLevel, message);
+                                    if (Tests.debugMode)
+                                    {
+                                        Console.WriteLine(MixedLogger.WriteLog(errorLevel, message));
+                                    }
+                                    else
+                                    {
+                                        Client.Send(MixedLogger.WriteLog(errorLevel, message));
+                                    }
                                     break;
                             }
                             Console.WriteLine("Continue testing?");
-                            Console.WriteLine("Enter 'y' to continue, or any key to return to main menu:");
-                            if (!(Console.ReadLine() == "y"))
+                            Console.WriteLine("Press any key to continue, or press 'n' to return to main menu:");
+                            if (Console.ReadLine() == "n")
                             {
                                 break;
                             }

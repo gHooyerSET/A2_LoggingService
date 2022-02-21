@@ -158,7 +158,7 @@ namespace A2_TestClient
         }
 
         /*
-        * METHOD : WriteCustomValidLog()
+        * METHOD : WriteCustomLog()
         *
         * DESCRIPTION : Writes a custom valid log to a string for testing purposes. Refer to Log-Format.txt for field tags
         * 

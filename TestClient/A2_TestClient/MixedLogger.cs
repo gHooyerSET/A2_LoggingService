@@ -14,33 +14,32 @@ using System.Text;
 namespace A2_TestClient
 {
 
-    public class InvalidLogger
+    public class MixedLogger
     {
-
-        /* Invalid log field variables */
-        public static string invalidFieldTags { get; private set; } = "-idt -itm -idn -ian -ipi -iel -ims"; 
-        public string invalidClientId { get; private set; } 
-        public string invalidDate { get; private set; } 
-        public string invalidTime { get; private set; } 
+        // Mixed Valid and Invalid log field variables
+        public static string fieldTags { get; private set; } = "-dt -tm -dn -an -pi -el -ms"; 
+        public string clientId { get; private set; } 
+        public string invalidDate { get; private set; }
+        public string time { get; private set; }
         public string invalidDevName { get; private set; }
-        public string invalidAppName { get; private set; } 
-        public int invalidPId { get; private set; } 
-        public int invalidErrorLvl { get; private set; } 
+        public string appName { get; private set; }
+        public int invalidPId { get; private set; }
+        public int errorLvl { get; private set; } 
         public string invalidMsg { get; private set; }
 
         /*
-        * METHOD :InvalidLogger()
+        * METHOD :MixedLogger()
         * 
         * PARAMETERS : int getErrorLvl, string getMsg
         * 
         * DESCRIPTION : Default constructor
         */
-        public InvalidLogger(int getErrorLvl, string getMsg)
+        public MixedLogger(int getErrorLvl, string getMsg)
         {
             MD5 md5 = MD5.Create();
             // Create clientId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
             // Referenced https://stackoverflow.com/a/24031467
-            string createclientId = invalidAppName + invalidPId.ToString();
+            string createclientId = appName + invalidPId.ToString();
             var clientIdBytes = new ASCIIEncoding().GetBytes(createclientId);
             var clientIdHash = md5.ComputeHash(clientIdBytes);
             StringBuilder sb = new StringBuilder();
@@ -48,14 +47,23 @@ namespace A2_TestClient
             {
                 sb.Append(clientIdHash[i].ToString("X2"));
             }
-            invalidClientId = sb.ToString();
+            clientId = sb.ToString();
 
+            // Valid fields
+            time = DateTime.Now.ToString("hh:mm:ss");
+            appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            // get error lvl
+            if (getErrorLvl > (int)ErrorCode.MAX || getErrorLvl < (int)ErrorCode.DEFAULT)
+            {
+                // Set to default if error level out of bounds
+                getErrorLvl = (int)ErrorCode.DEFAULT;
+            }
+            errorLvl = getErrorLvl;
+
+            // Invalid fields
             invalidDate = "f220/13/x211";
-            invalidTime = "5rfevc";
             invalidDevName = "-------";
-            invalidAppName = "Invalid_App";
             invalidPId = -123312;
-            invalidErrorLvl = (int)ErrorCode.MAX + 1;
             invalidMsg = "/n/t/n/t";
         }
 
@@ -70,8 +78,8 @@ namespace A2_TestClient
        */
         public static string WriteLog()
         {
-            InvalidLogger InvalidLogger = new InvalidLogger(0, "");
-            string jsonString = JsonConvert.SerializeObject(InvalidLogger);
+            MixedLogger MixedLogger = new MixedLogger(0, "");
+            string jsonString = JsonConvert.SerializeObject(MixedLogger);
             return jsonString;
         }
 
@@ -86,15 +94,15 @@ namespace A2_TestClient
         */
         public static string WriteLog(int errorLvl, string msg)
         {
-            InvalidLogger InvalidLogger = new InvalidLogger(errorLvl, msg);
-            string jsonString = JsonConvert.SerializeObject(InvalidLogger);
+            MixedLogger MixedLogger = new MixedLogger(errorLvl, msg);
+            string jsonString = JsonConvert.SerializeObject(MixedLogger);
             return jsonString;
         }
 
         /*
-        * METHOD : WriteCustomValidLog()
+        * METHOD : WriteCustomLog()
         *
-        * DESCRIPTION : Writes a custom valid log to a string for testing purposes. Refer to Log-Format.txt for field tags
+        * DESCRIPTION : Writes a custom mixed log to a string for testing purposes. Refer to Log-Format.txt for field tags
         * 
         * PARAMETERS : string fields : A string containing all the field tags that are to be included in the custom log
         *              int errorLvl
@@ -104,46 +112,46 @@ namespace A2_TestClient
         */
         public static string WriteCustomLog(string fields, int errorLvl, string msg)
         {
-            InvalidLogger InvalidLogger = new InvalidLogger(errorLvl, msg);
+            MixedLogger MixedLogger = new MixedLogger(errorLvl, msg);
 
             // Build string
-            if (!fields.Contains("-idt"))
+            if (!fields.Contains("-dt"))
             {
-                InvalidLogger.invalidDate = null;
+                MixedLogger.invalidDate = null;
             }
             // Time
-            if (!fields.Contains("-itm"))
+            if (!fields.Contains("-tm"))
             {
-                InvalidLogger.invalidTime = null;
+                MixedLogger.time = null;
             }
             // Device Name
-            if (!fields.Contains("-idn"))
+            if (!fields.Contains("-dn"))
             {
-                InvalidLogger.invalidDevName = null;
+                MixedLogger.invalidDevName = null;
             }
             // Application Name
-            if (!fields.Contains("-ian"))
+            if (!fields.Contains("-an"))
             {
-                InvalidLogger.invalidAppName = null;
+                MixedLogger.appName = null;
             }
             // Process id
-            if (!fields.Contains("-ipi"))
+            if (!fields.Contains("-pi"))
             {
-                InvalidLogger.invalidPId = -1;
+                MixedLogger.invalidPId = -1;
             }
 
             // Error Level
-            if (!fields.Contains("-iel"))
+            if (!fields.Contains("-el"))
             {
-                InvalidLogger.invalidErrorLvl = -1;
+                MixedLogger.errorLvl = -1;
             }
             // Message
-            if (!fields.Contains("-ims"))
+            if (!fields.Contains("-ms"))
             {
-                InvalidLogger.invalidMsg = null;
+                MixedLogger.invalidMsg = null;
             }
 
-            string jsonString = JsonConvert.SerializeObject(InvalidLogger);
+            string jsonString = JsonConvert.SerializeObject(MixedLogger);
             return jsonString;
         }
     }

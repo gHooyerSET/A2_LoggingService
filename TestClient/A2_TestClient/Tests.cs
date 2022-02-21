@@ -37,7 +37,7 @@ namespace A2_TestClient
         /*
         * METHOD : CustomInvalidFields()
         *
-        * DESCRIPTION : Sends custom combinations of valid OR invalid inputted log fields
+        * DESCRIPTION : Sends custom combinations of invalid inputted log fields
         * 
         * PARAMETERS : int delayTime : Time between each messsage in ms
         *              int numberOfMessages : Number of messages to send
@@ -49,21 +49,43 @@ namespace A2_TestClient
             // Send log
             if (Tests.debugMode)
             {
-                Console.WriteLine(invalidLogger.WriteCustomLog(fieldTags, errorLevel, message));
+                Console.WriteLine(InvalidLogger.WriteCustomLog(fieldTags, errorLevel, message));
             }
             else
             {
-                Client.Send(invalidLogger.WriteCustomLog(fieldTags, errorLevel, message));
+                Client.Send(InvalidLogger.WriteCustomLog(fieldTags, errorLevel, message));
             }
         }
-       
+
         /*
-        * METHOD : AllPermutatedFields()
+        * METHOD : CustomMixedFields()
         *
-        * DESCRIPTION : Sends different permutations of inputted log fields
+        * DESCRIPTION : Sends custom combinations of valid OR invalid inputted log fields
         * 
         * PARAMETERS : int delayTime : Time between each messsage in ms
-        *              int numberOfMessages : Total number of messages to send
+        *              int numberOfMessages : Number of messages to send
+        *
+        * RETURNS :NA
+        */
+        public static void CustomMixedFields(string fieldTags, int errorLevel, string message)
+        {
+            // Send log
+            if (Tests.debugMode)
+            {
+                Console.WriteLine(MixedLogger.WriteCustomLog(fieldTags, errorLevel, message));
+            }
+            else
+            {
+                Client.Send(MixedLogger.WriteCustomLog(fieldTags, errorLevel, message));
+            }
+        }
+
+        /*
+        * METHOD : AllValidPermutatedFields()
+        *
+        * DESCRIPTION : Sends different permutations of valid inputted log fields
+        * 
+        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message
         *
         * RETURNS :NA
         */
@@ -106,12 +128,11 @@ namespace A2_TestClient
         }
 
         /*
-        * METHOD : AllPermutatedFields()
+        * METHOD : AllInvalidPermutatedFields()
         *
-        * DESCRIPTION : Sends different permutations of inputted log fields
+        * DESCRIPTION : Sends different permutations of invalid inputted log fields
         * 
-        * PARAMETERS : int delayTime : Time between each messsage in ms
-        *              int numberOfMessages : Total number of messages to send
+        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message
         *
         * RETURNS :NA
         */
@@ -136,6 +157,53 @@ namespace A2_TestClient
 
                 //Send custom log
                 CustomInvalidFields(string.Join("", list), errorLevel, message);
+
+                numberOfFieldsToExlclude++;
+
+                if (numberOfFieldsToExlclude == numberOfTags - 1)
+                {
+                    numberOfFieldsToExlclude = 0;
+                }
+
+                i++;
+
+                if (i == numberOfMessages)
+                {
+                    break;
+                }
+            }
+        }
+
+        /*
+        * METHOD : AllMixedPermutatedFields()
+        *
+        * DESCRIPTION : Sends different permutations of valid and invalid log fields
+        * 
+        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message
+        *
+        * RETURNS :NA
+        */
+        public static void AllMixedPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
+        {
+            string[] tags = inputTags.Split(' ');
+            int numberOfTags = tags.Count();
+            var rand = new Random();
+            int numberOfFieldsToExlclude = 0;
+            // Create a list with every permutaion of our field tags
+            IList<IList<string>> tagPermutations = Permute(tags);
+            int i = 0;
+            foreach (var list in tagPermutations)
+            {
+                System.Threading.Thread.Sleep(delayTime);
+
+                // Remove fields, increasing each permutation
+                for (int count = 0; count < numberOfFieldsToExlclude; count++)
+                {
+                    list[count] = "";
+                }
+
+                //Send custom log
+                CustomMixedFields(string.Join("", list), errorLevel, message);
 
                 numberOfFieldsToExlclude++;
 
