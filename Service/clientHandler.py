@@ -1,3 +1,9 @@
+# FILE : clientHandler.py
+# PROJECT : A2 Logging Service
+# PROGRAMMER : Gerritt Hooyer
+# FIRST VERSION : 2022-02-15
+# DESCRIPTION : Handles client requests.
+
 import socket
 import threading
 import fileHandler
@@ -19,8 +25,8 @@ clientList = []
 # NAME: Request
 # PURPOSE : Stores request data in an easy-to-reference object
 class Request():    
-    def __init__(self,clientID,date,time,devName,appName,pId,errorLvl,msg):
-        self.clientID = clientID
+    def __init__(self,clientId,date,time,devName,appName,pId,errorLvl,msg):
+        self.clientId = clientId
         self.date = date
         self.time = time
         self.devName = devName
@@ -29,6 +35,8 @@ class Request():
         self.errorLvl = errorLvl
         self.msg = msg
 
+# NAME: Client
+# PURPOSE : Stores information related to a client's session
 class Client():
     rate = DEFAULT_RATE
     period = DEFAULT_PERIOD
@@ -37,10 +45,10 @@ class Client():
     # FUNCTION : __init__ (Constructor)
     # DESCRIPTION : Initializes an instance of the Client object
     # PARAMETERS : self - the instance of Client
-    #              clientID - an ID for the client instance
+    #              clientId - an ID for the client instance
     # RETURNS : N/A
-    def __init__(self,clientID,allowance,lastCheck):
-        self.clientID = clientID
+    def __init__(self,clientId,allowance,lastCheck):
+        self.clientId = clientId
         self.allowance = allowance
         self.lastCheck = lastCheck
 
@@ -56,27 +64,26 @@ class Client():
     
 
     # FUNCTION: findClient
-    # DESCRIPTION: Finds an instance of a client with a matching clientID
+    # DESCRIPTION: Finds an instance of a client with a matching clientId
     #              and retuerns it to the user.
-    # PARAMETERS: clientID - String - The ID of the client's session
+    # PARAMETERS: clientId - String - The ID of the client's session
     # RETURNS: retValue - Client - an instance of the client object with the matching ID
     @staticmethod
-    def findClient(clientID):
+    def findClient(clientId):
         # Create our variables for the item index
         # and the retValue
         index = CLIENT_NOT_FOUND
         retValue = None
         # Iterate through the list, searching for an item
-        print(clientList)
         if clientList:
             for client in clientList:
                 # If it is found, set index to 'i'
-                if client.clientID == clientID:
+                if client.clientId == clientId:
                     retValue = client
         # If a client was found (i.e. index != -1)
         if retValue == None:
             # Otherwise, create a new client and append it to the list
-            retValue = Client(clientID,Client.rate,datetime.now())
+            retValue = Client(clientId,Client.rate,datetime.now())
             clientList.append(retValue)
             
         return retValue
@@ -125,12 +132,8 @@ class Client():
 def cleanClients():   
         # Get the current time
         current = datetime.now()
-        print(Client.cleanupCheck)
-        print(current)
         # Get the time passed
-        timePassed = current - Client.cleanupCheck        
-        # Debug
-        print(timePassed)
+        timePassed = current - Client.cleanupCheck
         # If the time passed is >= the time between cleanups, clean up
         if (float(timePassed.seconds) >= TIME_BETWEEN_CLEANUP):
             # Set the cleanupCheck to the current time
@@ -159,15 +162,13 @@ def handleClient(sock, parser):
         request = sock.recv(1024)
         # Decode it
         msg = request.decode()
-        
-        print(msg)
         # Create a request object from the received msg
         # by first creating our dict via deserialzing the JSON string
         request_dict = json.loads(msg)
         # Then turn it into a Request object
         request = Request(**request_dict)
         # Get our client instance
-        client = Client.findClient(request.clientID)
+        client = Client.findClient(request.clientId)
         # If the rate limiter returns true, write to the log
         if Client.rateLimiter(client) == True:
             # Then create our response
@@ -180,7 +181,7 @@ def handleClient(sock, parser):
             # and we don't want to wait for it to finish
         else:
             response = "Rate limited for client".encode()
-            print("Rate limited for Client " + client.clientID)
+            print("Rate limited for Client " + client.clientId)
         # Send a response message
         sock.send(response)        
         # Print a disconnect message

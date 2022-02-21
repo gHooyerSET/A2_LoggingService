@@ -21,6 +21,8 @@ INVALID_PORT = -1
 ARGS_ARRAY_OFFSET = 0
 ARG_OFFSET = 1
 
+# NAME: ArgParser
+# PURPOSE : Parses command line arguments and displays information related to those arguments
 class ArgParser():
 
     displayedHelp = False
@@ -30,6 +32,11 @@ class ArgParser():
     mode = MODE_JSON
     outFormat = []
 
+    # FUNCTION : printHelpMessage
+    # DESCRIPTION : Prints a help message from the 'help.txt' file
+    #               to the screen
+    # PARAMETERS : N/A
+    # RETURNS : N/A
     staticmethod
     def  printHelpMessage():
         # Open the text file with help information
@@ -40,7 +47,13 @@ class ArgParser():
         print(helpMsg)
         # Close the file
         fHelp.close()
-
+    
+    # FUNCTION : parseArgs
+    # DESCRIPTION : Parses the user's command-line arguments and stores
+    #               them in the static variables in the ArgParser class
+    # PARAMETERS : self - the instance of ArgParser
+    #              *args - The list of arguments provided via command line as strings
+    # RETURNS : N/A
     classmethod
     def parseArgs(self,*args):
         length = len(args[ARGS_ARRAY_OFFSET])
@@ -71,9 +84,12 @@ class ArgParser():
                     self.fileName = arg
                 # Check for a format switch tag
                 elif(switch == "-f"):
-                    if (arg == "json"):
+                    if (arg == ARG_JSON):
                         # Set the output mode to JSON
                         ArgParser.mode = MODE_JSON
+                    elif (arg == ARG_SYSLOG):
+                        # Set the output mode to Syslog
+                        ArgParser.mode = MODE_SYSLOG
                     else:
                         ArgParser.mode = MODE_CUSTOM
                         ArgParser.outFormat = arg.split(' ')
