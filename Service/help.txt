@@ -35,11 +35,12 @@ pId			- The application's process ID
 errorLvl	- The error level of the log message
 errorType	- The error type (based on error level)
 msg			- A message related to the log entry as a string of text
+\s			- A whitespace tag
 
 
 All tags should be entered as an argument after 
 
-Example: "clientId date time errorLvl msg"
+Example: "clientId \s date \s time \s errorLvl \s msg"
 
 This will create a log entry that looks like the following:
 

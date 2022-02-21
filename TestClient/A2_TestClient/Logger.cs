@@ -11,6 +11,8 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
+
+
 namespace A2_TestClient
 {
     enum ErrorCode
@@ -39,18 +41,7 @@ namespace A2_TestClient
         */
         public Logger()
         {
-            MD5 md5 = MD5.Create();
-            // Create clientId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
-            // Referenced https://stackoverflow.com/a/24031467
-            string createclientId = appName + pId.ToString();
-            var clientIdBytes = new ASCIIEncoding().GetBytes(createclientId);
-            var clientIdHash = md5.ComputeHash(clientIdBytes);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < clientIdHash.Length; i++)
-            {
-                sb.Append(clientIdHash[i].ToString("X2"));
-            }
-            clientId = sb.ToString();
+            MD5 md5 = MD5.Create();            
 
             // Get todays date and time
             date = DateTime.Now.ToString("dd/mm/yyyy");
@@ -70,19 +61,7 @@ namespace A2_TestClient
 
             // get message
             msg = "None";
-        }
 
-        /*
-        * METHOD :Logger() OVERLOADED
-        * 
-        * PARAMETERS : int getErrorLvl, string getMsg
-        * 
-        * DESCRIPTION : Default constructor
-        */
-        public Logger(int getErrorLvl, string getMsg) 
-        {
-            /******************  Valid Data ******************/
-            MD5 md5 = MD5.Create();
             // Create clientId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
             // Referenced https://stackoverflow.com/a/24031467
             string createclientId = appName + pId.ToString();
@@ -94,7 +73,17 @@ namespace A2_TestClient
                 sb.Append(clientIdHash[i].ToString("X2"));
             }
             clientId = sb.ToString();
+        }
 
+        /*
+        * METHOD :Logger() OVERLOADED
+        * 
+        * PARAMETERS : int getErrorLvl, string getMsg
+        * 
+        * DESCRIPTION : Default constructor
+        */
+        public Logger(int getErrorLvl, string getMsg) 
+        {
             // Get todays date and time
             date = DateTime.Now.ToString("dd/mm/yyyy");
             time = DateTime.Now.ToString("hh:mm:ss");
@@ -123,6 +112,20 @@ namespace A2_TestClient
                 getMsg = "None";
             }
             msg = getMsg;
+
+            /******************  Valid Data ******************/
+            MD5 md5 = MD5.Create();
+            // Create clientId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
+            // Referenced https://stackoverflow.com/a/24031467
+            string createclientId = appName + pId.ToString();
+            var clientIdBytes = new ASCIIEncoding().GetBytes(createclientId);
+            var clientIdHash = md5.ComputeHash(clientIdBytes);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < clientIdHash.Length; i++)
+            {
+                sb.Append(clientIdHash[i].ToString("X2"));
+            }
+            clientId = sb.ToString();
         }
 
         /*

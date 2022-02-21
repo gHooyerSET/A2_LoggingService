@@ -11,7 +11,7 @@ namespace A2_TestClient
     public static class Client
     {
         public static string ip = "127.0.0.1"; // Ip address of server
-        public static int port = 13131; // Port of server
+        public static int port = 8500; // Port of server
 
         public static int bufferSize = 1024; // Buffer size for sending log
 
