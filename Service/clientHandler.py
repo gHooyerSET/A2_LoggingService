@@ -159,6 +159,8 @@ def handleClient(sock, parser):
         request = sock.recv(1024)
         # Decode it
         msg = request.decode()
+        
+        print(msg)
         # Create a request object from the received msg
         # by first creating our dict via deserialzing the JSON string
         request_dict = json.loads(msg)
@@ -185,7 +187,7 @@ def handleClient(sock, parser):
         print("Disconnected from client.")
     except Exception as e:
         # If any operation fails, print our exception message
-        print("handleClient Error : " + e + "\n")
+        print(e)
     finally:
         # Then close the socket
         sock.close()

@@ -22,7 +22,7 @@ namespace A2_TestClient
     public class Logger
     {
         public static string fieldTags { get; private set; } = "-dt -tm -dn -an -pi -el -ms"; // Contains all field tags
-        public string logId { get; private set; } // Message containing the log id, an MD5 hash of the device name and process ID
+        public string clientId { get; private set; } // Message containing the log id, an MD5 hash of the device name and process ID
         public string date { get; private set; }  // A string containing the date (dd/mm/yy)
         public string time { get; private set; }  // A string containing the time (hh:mm:ss)
         public string devName { get; private set; } // A string containg the device/computer name
@@ -39,17 +39,17 @@ namespace A2_TestClient
         public Logger()
         {
             MD5 md5 = MD5.Create();
-            // Create logId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
+            // Create clientId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
             // Referenced https://stackoverflow.com/a/24031467
-            string createLogId = appName + pId.ToString();
-            var logIdBytes = new ASCIIEncoding().GetBytes(createLogId);
-            var logIdHash = md5.ComputeHash(logIdBytes);
+            string createclientId = appName + pId.ToString();
+            var clientIdBytes = new ASCIIEncoding().GetBytes(createclientId);
+            var clientIdHash = md5.ComputeHash(clientIdBytes);
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < logIdHash.Length; i++)
+            for (int i = 0; i < clientIdHash.Length; i++)
             {
-                sb.Append(logIdHash[i].ToString("X2"));
+                sb.Append(clientIdHash[i].ToString("X2"));
             }
-            logId = sb.ToString();
+            clientId = sb.ToString();
 
             // Get todays date and time
             date = DateTime.Now.ToString("dd/mm/yyyy");
@@ -78,17 +78,17 @@ namespace A2_TestClient
         public Logger(int getErrorLvl, string getMsg) 
         {
             MD5 md5 = MD5.Create();
-            // Create logId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
+            // Create clientId by combining appName and pId, converted into bytes, hash with MD5 and convert to hex string
             // Referenced https://stackoverflow.com/a/24031467
-            string createLogId = appName + pId.ToString();
-            var logIdBytes = new ASCIIEncoding().GetBytes(createLogId);
-            var logIdHash = md5.ComputeHash(logIdBytes);
+            string createclientId = appName + pId.ToString();
+            var clientIdBytes = new ASCIIEncoding().GetBytes(createclientId);
+            var clientIdHash = md5.ComputeHash(clientIdBytes);
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < logIdHash.Length; i++)
+            for (int i = 0; i < clientIdHash.Length; i++)
             {
-                sb.Append(logIdHash[i].ToString("X2"));
+                sb.Append(clientIdHash[i].ToString("X2"));
             }
-            logId = sb.ToString();
+            clientId = sb.ToString();
 
             // Get todays date and time
             date = DateTime.Now.ToString("dd/mm/yyyy");
@@ -170,10 +170,10 @@ namespace A2_TestClient
             // Build string
             StringBuilder logSb = new StringBuilder();
             logSb.Append(@"{");
-            logSb.AppendFormat("\"clientID\":{0},", logger.logId);
+            logSb.AppendFormat("\"clientID\":\"{0}\",", logger.clientId);
             if (fields.Contains("-dt"))
             {
-                logSb.AppendFormat("\"date\":{0},", logger.date);
+                logSb.AppendFormat("\"date\":\"{0}\",", logger.date);
             }
             else
             {
@@ -181,7 +181,7 @@ namespace A2_TestClient
             }
             if (fields.Contains("-tm"))
             {
-                logSb.AppendFormat("\"time\":{0},", logger.time);
+                logSb.AppendFormat("\"time\":\"{0}\",", logger.time);
             }
             else
             {
@@ -189,7 +189,7 @@ namespace A2_TestClient
             }
             if (fields.Contains("-dn"))
             {
-                logSb.AppendFormat("\"devName\":{0},", logger.devName);
+                logSb.AppendFormat("\"devName\":\"{0}\",", logger.devName);
             }
             else
             {
@@ -197,7 +197,7 @@ namespace A2_TestClient
             }
             if (fields.Contains("-pi"))
             {
-                logSb.AppendFormat("\"appName\":{0},", logger.appName);
+                logSb.AppendFormat("\"appName\":\"{0}\",", logger.appName);
             }
             else
             {
@@ -213,7 +213,7 @@ namespace A2_TestClient
             }
             if (fields.Contains("-ms"))
             {
-                logSb.AppendFormat("\"msg\":{0},", logger.msg);
+                logSb.AppendFormat("\"msg\":\"{0}\",", logger.msg);
             }
             else
             {
