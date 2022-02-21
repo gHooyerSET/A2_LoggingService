@@ -21,15 +21,16 @@ namespace A2_TestClient
             Console.WriteLine("IP Address:{0}", Client.ip);
             Console.WriteLine("Port:{0}", Client.port);
             Console.WriteLine("Debug Mode:{0}\n", Tests.debugMode);
-            Console.WriteLine("Options:\n");
+            Console.WriteLine("Options:");
             Console.WriteLine("\t1 Configure Network\n");
             Console.WriteLine("\t2 Run Tests\n");
             Console.WriteLine("\t3 Toggle Debug Mode\n");
-            Console.WriteLine("\tQ Quit\n");
+            Console.WriteLine("\tq Quit\n");
 
             Console.WriteLine("Select option:");
             switch (Console.ReadLine())
             {
+                /************************* Configure network **************************/
                 case NET_CONFIG:
                     Console.Clear();
                     // Get Ip
@@ -57,17 +58,52 @@ namespace A2_TestClient
                     }
                     return true;
 
+                /************************* Run Tests **************************/
                 case RUN_TESTS:
                     {
                         while (true)
                         {
                             Console.Clear();
                             Console.WriteLine("Tests:\n");
-                            Console.WriteLine("\t1 Send Valid Field Combinations\n");
+                            Console.WriteLine("\t1 Custom Log\n");
+                            Console.WriteLine("\t2 Custom Valid OR Invalid Log\n");
+                            Console.WriteLine("\t3 All Valid Field Permutations\n");
+                            Console.WriteLine("\t4 Test Custom Valid OR Invalid Log Field Permutations\n");
                             Console.WriteLine("Select Test:");
                             switch (Console.ReadLine())
                             {
+                                /************************* Test Custom Valid Log **************************/
                                 case "1":
+                                    Console.WriteLine("Valid field tags: \n\t(-dt)Date\n\t(-tm)Time\n\t(-dn)Device Name\n\t(-an)Application Name\n\t(-pi)Process ID\n\t(-el)Error Level\n\t(-ms)Message");
+                                    Console.WriteLine("Enter field tags: ");
+                                    string fieldTags = "";
+                                    fieldTags = Console.ReadLine();
+                                    Console.WriteLine("Enter error level: ");
+                                    int errorLevel = -1;
+                                    int.TryParse(Console.ReadLine(), out errorLevel);
+                                    Console.WriteLine("Enter message: ");
+                                    string message = "";
+                                    message = Console.ReadLine();
+                                    Tests.CustomValidFields(fieldTags, errorLevel, message);
+                                    break;
+
+                                /************************* Test Custom Valid OR Invalid Log **************************/
+                                case "2":
+                                    Console.WriteLine("Valid field tags: \n\t(-dt)Date\n\t(-tm)Time\n\t(-dn)Device Name\n\t(-an)Application Name\n\t(-pi)Process ID\n\t(-el)Error Level\n\t(-ms)Message");
+                                    Console.WriteLine("Invalid field tags: \n\t(-idt)Invalid Date\n\t(-itm)Invalid Time\n\t(-idn)Invalid Device Name\n\t(-ian)Invalid Application Name\n\t(-ipi)Invalid Process ID\n\t(-iel)Invalid Error Level\n\t(-ims)Invalid Message");
+                                    Console.WriteLine("Enter field tags: ");
+                                    fieldTags = "";
+                                    fieldTags = Console.ReadLine();
+                                    Console.WriteLine("Enter error level: ");
+                                    errorLevel = -1;
+                                    int.TryParse(Console.ReadLine(), out errorLevel);
+                                    Console.WriteLine("Enter message: ");
+                                    message = "";
+                                    message = Console.ReadLine();
+                                    Tests.CustomInvalidFields(fieldTags, errorLevel, message);
+                                    break;
+                                /************************* Test All Valid Log Field Permutations **************************/
+                                case "3":
                                     Console.WriteLine("Enter delay time(ms): ");
                                     int delay = 0;
                                     int.TryParse(Console.ReadLine(), out delay);
@@ -75,7 +111,23 @@ namespace A2_TestClient
                                     int logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.TestValidFields(delay, logsToSend);
+                                    Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, -1, "Test");
+                                    break;
+
+                                /************************* Test Custom Valid OR Invalid Log Field Permutations **************************/
+                                case "4":
+                                    Console.WriteLine("Enter delay time(ms): ");
+                                    delay = 0;
+                                    int.TryParse(Console.ReadLine(), out delay);
+                                    Console.WriteLine("Enter number of logs to send: ");
+                                    logsToSend = 0;
+                                    int.TryParse(Console.ReadLine(), out logsToSend);
+                                    Console.WriteLine("Valid field tags: \n\t(-dt)Date\n\t(-tm)Time\n\t(-dn)Device Name\n\t(-an)Application Name\n\t(-pi)Process ID\n\t(-el)Error Level\n\t(-ms)Message");
+                                    Console.WriteLine("Enter field tags: ");
+                                    fieldTags = "";
+                                    fieldTags = Console.ReadLine();
+                                    Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
+                                    Tests.CustomPermutatedFields(delay, logsToSend, Logger.fieldTags, -1, "Test");
                                     break;
                             }
                             Console.WriteLine("Continue testing?");
