@@ -32,17 +32,6 @@ namespace A2_TestClient
         public int errorLvl { get; private set; } // An integer denoting the level and severity of error : (0-10,000 Debug)(0-20,000 Info)(0-30,000 Warning)(0-40,000 Error)(0-50,000 Fatal)
         public string msg { get; private set; } // A string containing the log message
 
-        // Invalid log field variables
-        public static string invalidFieldTags { get; private set; } = "-idt -itm -idn -ian -ipi -iel -ims"; 
-        public string invalidClientId { get; private set; } 
-        public string invalidDate { get; private set; } 
-        public string invalidTime { get; private set; } 
-        public string invalidDevName { get; private set; }
-        public string invalidAppName { get; private set; } 
-        public int invalidPId { get; private set; } 
-        public int invalidErrorLvl { get; private set; } 
-        public string invalidMsg { get; private set; }
-
         /*
         * METHOD :Logger()
         *
@@ -134,15 +123,6 @@ namespace A2_TestClient
                 getMsg = "None";
             }
             msg = getMsg;
-
-            /******************  invalid Data ******************/
-            invalidClientId = clientId;
-            invalidDate = "f220/13/x211";
-            invalidTime = "5rfevc";
-            invalidDevName = "-------";
-            invalidPId = -123312;
-            invalidErrorLvl = (int)ErrorCode.MAX + 1;
-            invalidMsg = "/n/t/n/t";
         }
 
         /*
@@ -188,223 +168,49 @@ namespace A2_TestClient
         *
         * RETURNS : string : All log fields requested, with each field starting with their corresponding identifier 
         */
-        public static string WriteCustomValidLog(string fields, int errorLvl, string msg)
+        public static string WriteCustomLog(string fields, int errorLvl, string msg)
         {
             Logger logger = new Logger(errorLvl, msg);
 
             // Build string
-            StringBuilder logSb = new StringBuilder();
-            logSb.Append(@"{");
-            logSb.AppendFormat("\"clientID\":\"{0}\",", logger.clientId);
-            if (fields.Contains("-dt"))
+            if (!fields.Contains("-dt"))
             {
-                logSb.AppendFormat("\"date\":\"{0}\",", logger.date);
-            }
-            else
-            {
-                logSb.AppendFormat("\"date\":None,");
+                logger.date = null;
             }
             // Time
-            if (fields.Contains("-tm"))
+            if (!fields.Contains("-tm"))
             {
-                logSb.AppendFormat("\"time\":{0},", logger.time);
-            }
-            else
-            {
-                logSb.AppendFormat("\"time\":None,");
+                logger.time = null;
             }
             // Device Name
-            if (fields.Contains("-dn"))
+            if (!fields.Contains("-dn"))
             {
-                logSb.AppendFormat("\"devName\":{0},", logger.devName);
-            }
-            else
-            {
-                logSb.AppendFormat("\"devName\":None,");
+                logger.devName = null;
             }
             // Application Name
-            if (fields.Contains("-an"))
+            if (!fields.Contains("-an"))
             {
-                logSb.AppendFormat("\"appName\":{0},", logger.appName);
-            }
-            else
-            {
-                logSb.AppendFormat("\"appName\":None,");
+                logger.appName = null;
             }
             // Process id
-            if (fields.Contains("-pi"))
+            if (!fields.Contains("-pi"))
             {
-                logSb.AppendFormat("\"pId\":{0},", logger.pId);
+                logger.pId = -1;
             }
-            else
-            {
-                logSb.AppendFormat("\"pId\":None,");
-            }
+
             // Error Level
-            if (fields.Contains("-el"))
+            if (!fields.Contains("-el"))
             {
-                logSb.AppendFormat("\"errorLvl\":{0},", logger.errorLvl);
-            }
-            else
-            {
-                logSb.AppendFormat("\"errorLvl\":None,");
+                logger.errorLvl = -1;
             }
             // Message
-            if (fields.Contains("-ms"))
+            if (!fields.Contains("-ms"))
             {
-                logSb.AppendFormat("\"msg\":{0},", logger.msg);
+                logger.msg = null;
             }
-            else
-            {
-                logSb.AppendFormat("\"msg\":None,");
-            }
-            // Remove final comma
-            logSb.Length--;
-            logSb.AppendLine(@"}");
 
-            return logSb.ToString();
-        }
-
-        /*
-        * METHOD : WriteCustomInvalidLog
-        * 
-        * PARAMETERS : string fields, int errorLvl, string msg
-        * 
-        * DESCRIPTION : Writes a custom invalid log. Log can contain valid and invalid fields
-        */
-        public static string WriteCustomInvalidLog(string fields, int errorLvl, string msg)
-        {
-            Logger logger = new Logger(errorLvl, msg);
-
-            // Build string
-            StringBuilder logSb = new StringBuilder();
-            logSb.Append(@"{");
-            // clientID : is constant
-            logSb.AppendFormat("\"InvalidClientID\":{0},", logger.invalidClientId);
-            // Date
-            if (fields.Contains("-idt"))
-            {
-                logSb.AppendFormat("\"invalidDate\":{0},", logger.invalidDate);
-            }
-            else
-            {
-                logSb.AppendFormat("\"invalidDate\":None,");
-            }
-            if (fields.Contains("-dt"))
-            {
-                logSb.AppendFormat("\"date\":{0},", logger.date);
-            }
-            else
-            {
-                logSb.AppendFormat("\"date\":None,");
-            }
-            // Time
-            if (fields.Contains("-itm"))
-            {
-                logSb.AppendFormat("\"invalidTime\":{0},", logger.invalidTime);
-            }
-            else
-            {
-                logSb.AppendFormat("\"invalidTime\":None,");
-            }
-            if (fields.Contains("-tm"))
-            {
-                logSb.AppendFormat("\"time\":\"{0}\",", logger.time);
-            }
-            else
-            {
-                logSb.AppendFormat("\"time\":None,");
-            }
-            // Device Name
-            if (fields.Contains("-idn"))
-            {
-                logSb.AppendFormat("\"invalidDevName\":{0},", logger.invalidDevName);
-            }
-            else
-            {
-                logSb.AppendFormat("\"invalidDevName\":None,");
-            }
-            if (fields.Contains("-dn"))
-            {
-                logSb.AppendFormat("\"devName\":\"{0}\",", logger.devName);
-            }
-            else
-            {
-                logSb.AppendFormat("\"devName\":None,");
-            }
-            // Application Name
-            if (fields.Contains("-ian"))
-            {
-                logSb.AppendFormat("\"invalidAppName\":{0},", logger.invalidAppName);
-            }
-            else
-            {
-                logSb.AppendFormat("\"invalidAppName\":None,");
-            }
-            if (fields.Contains("-an"))
-            {
-                logSb.AppendFormat("\"appName\":\"{0}\",", logger.appName);
-            }
-            else
-            {
-                logSb.AppendFormat("\"appName\":None,");
-            }
-            // Process id
-            if (fields.Contains("-ipi"))
-            {
-                logSb.AppendFormat("\"invalidPId\":{0},", logger.invalidPId);
-            }
-            else
-            {
-                logSb.AppendFormat("\"invalidPId\":None,");
-            }
-            if (fields.Contains("-pi"))
-            {
-                logSb.AppendFormat("\"pId\":{0},", logger.pId);
-            }
-            else
-            {
-                logSb.AppendFormat("\"pId\":None,");
-            }
-            // Error Level
-            if (fields.Contains("-iel"))
-            {
-                logSb.AppendFormat("\"invalidErrorLvl\":{0},", logger.invalidErrorLvl);
-            }
-            else
-            {
-                logSb.AppendFormat("\"invalidErrorLvl\":None,");
-            }
-            if (fields.Contains("-el"))
-            {
-                logSb.AppendFormat("\"errorLvl\":{0},", logger.errorLvl);
-            }
-            else
-            {
-                logSb.AppendFormat("\"errorLvl\":None,");
-            }
-            // Message
-            if (fields.Contains("-ims"))
-            {
-                logSb.AppendFormat("\"invalidMsg\":{0},", logger.invalidMsg);
-            }
-            else
-            {
-                logSb.AppendFormat("\"invalidMsg\":None,");
-            }
-            if (fields.Contains("-ms"))
-            {
-                logSb.AppendFormat("\"msg\":\"{0}\",", logger.msg);
-            }
-            else
-            {
-                logSb.AppendFormat("\"msg\":None,");
-            }
-            // Remove final comma
-            logSb.Length--;
-            logSb.AppendLine(@"}");
-
-            return logSb.ToString();
+            string jsonString = JsonConvert.SerializeObject(logger);
+            return jsonString;
         }
     }
 }

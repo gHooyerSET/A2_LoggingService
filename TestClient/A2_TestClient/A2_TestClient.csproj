@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="invalidLogger.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="TestClient.cs" />

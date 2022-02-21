@@ -66,9 +66,9 @@ namespace A2_TestClient
                             Console.Clear();
                             Console.WriteLine("Tests:\n");
                             Console.WriteLine("\t1 Custom Log\n");
-                            Console.WriteLine("\t2 Custom Valid OR Invalid Log\n");
+                            Console.WriteLine("\t2 Custom Invalid Log\n");
                             Console.WriteLine("\t3 All Valid Field Permutations\n");
-                            Console.WriteLine("\t4 Test Custom Valid OR Invalid Log Field Permutations\n");
+                            Console.WriteLine("\t4 Test All Invalid Log Field Permutations\n");
                             Console.WriteLine("Select Test:");
                             switch (Console.ReadLine())
                             {
@@ -87,9 +87,8 @@ namespace A2_TestClient
                                     Tests.CustomValidFields(fieldTags, errorLevel, message);
                                     break;
 
-                                /************************* Test Custom Valid OR Invalid Log **************************/
+                                /************************* Test Custom Invalid Log **************************/
                                 case "2":
-                                    Console.WriteLine("Valid field tags: \n\t(-dt)Date\n\t(-tm)Time\n\t(-dn)Device Name\n\t(-an)Application Name\n\t(-pi)Process ID\n\t(-el)Error Level\n\t(-ms)Message");
                                     Console.WriteLine("Invalid field tags: \n\t(-idt)Invalid Date\n\t(-itm)Invalid Time\n\t(-idn)Invalid Device Name\n\t(-ian)Invalid Application Name\n\t(-ipi)Invalid Process ID\n\t(-iel)Invalid Error Level\n\t(-ims)Invalid Message");
                                     Console.WriteLine("Enter field tags: ");
                                     fieldTags = "";
@@ -114,7 +113,7 @@ namespace A2_TestClient
                                     Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, -1, "Test");
                                     break;
 
-                                /************************* Test Custom Valid OR Invalid Log Field Permutations **************************/
+                                /************************* Test Invalid Log Field Permutations **************************/
                                 case "4":
                                     Console.WriteLine("Enter delay time(ms): ");
                                     delay = 0;
@@ -122,12 +121,8 @@ namespace A2_TestClient
                                     Console.WriteLine("Enter number of logs to send: ");
                                     logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
-                                    Console.WriteLine("Valid field tags: \n\t(-dt)Date\n\t(-tm)Time\n\t(-dn)Device Name\n\t(-an)Application Name\n\t(-pi)Process ID\n\t(-el)Error Level\n\t(-ms)Message");
-                                    Console.WriteLine("Enter field tags: ");
-                                    fieldTags = "";
-                                    fieldTags = Console.ReadLine();
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.CustomPermutatedFields(delay, logsToSend, Logger.fieldTags, -1, "Test");
+                                    Tests.AllInvalidPermutatedFields(delay, logsToSend, invalidLogger.invalidFieldTags, -1, "Test");
                                     break;
                             }
                             Console.WriteLine("Continue testing?");

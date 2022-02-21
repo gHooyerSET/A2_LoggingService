@@ -26,11 +26,11 @@ namespace A2_TestClient
             // Send log
             if (Tests.debugMode)
             {
-                Console.WriteLine(Logger.WriteCustomValidLog(fieldTags, errorLevel, message));
+                Console.WriteLine(Logger.WriteCustomLog(fieldTags, errorLevel, message));
             }
             else
             {
-                Client.Send(Logger.WriteCustomValidLog(fieldTags, errorLevel, message));
+                Client.Send(Logger.WriteCustomLog(fieldTags, errorLevel, message));
             }
         }
 
@@ -49,14 +49,14 @@ namespace A2_TestClient
             // Send log
             if (Tests.debugMode)
             {
-                Console.WriteLine(Logger.WriteCustomInvalidLog(fieldTags, errorLevel, message));
+                Console.WriteLine(invalidLogger.WriteCustomLog(fieldTags, errorLevel, message));
             }
             else
             {
-                Client.Send(Logger.WriteCustomInvalidLog(fieldTags, errorLevel, message));
+                Client.Send(invalidLogger.WriteCustomLog(fieldTags, errorLevel, message));
             }
         }
-
+       
         /*
         * METHOD : AllPermutatedFields()
         *
@@ -108,14 +108,14 @@ namespace A2_TestClient
         /*
         * METHOD : AllPermutatedFields()
         *
-        * DESCRIPTION : Sends different permutations of valid OR invalid inputted log fields
+        * DESCRIPTION : Sends different permutations of inputted log fields
         * 
         * PARAMETERS : int delayTime : Time between each messsage in ms
         *              int numberOfMessages : Total number of messages to send
         *
         * RETURNS :NA
         */
-        public static void CustomPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
+        public static void AllInvalidPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
         {
             string[] tags = inputTags.Split(' ');
             int numberOfTags = tags.Count();
@@ -152,6 +152,7 @@ namespace A2_TestClient
                 }
             }
         }
+
         //https://www.chadgolden.com/blog/finding-all-the-permutations-of-an-array-in-c-sharp
         /*
         * METHOD : Permute
