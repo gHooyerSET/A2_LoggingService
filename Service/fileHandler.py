@@ -46,16 +46,16 @@ LOGLEVEL_UNK = "unknown"
 #              msg - The client's original JSON message as a string
 # RETURNS : N/A
 def resolveOutput(parser,request,msg):
-    fileMsg = ""
+    fileStr = ""
     # Check the mode and set msg accordingly
     if(parser.mode == argParser.MODE_JSON):
-        fileMsg = msg
-    if(parser.mode == argParser.MODE_SYSLOG):
-        fileMsg = createSyslogOutput(request)
+        fileStr = msg
+    elif(parser.mode == argParser.MODE_SYSLOG):
+        fileStr = createSyslogOutput(request)
     else:
-        fileMsg = createOutput(parser,request)
+        fileStr = createOutput(parser,request)
     # Then write msg to the file
-    write(parser.fileName,fileMsg)
+    write(parser.fileName,fileStr)
 
 # FUNCTION : getErrorType
 # DESCRIPTION : Uses an error level to return the matching error type
@@ -160,7 +160,7 @@ def write(fileName,msg):
         else:
             #Otherwise, we append to the file
             fo = open(fileName,"a")
-        fo.write(msg + "\n")
+        fo.write(msg+"\n")
         # Then close it
         fo.close()
     except OSError:
