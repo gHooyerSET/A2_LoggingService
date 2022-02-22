@@ -46,13 +46,14 @@ LOGLEVEL_UNK = "unknown"
 #              msg - The client's original JSON message as a string
 # RETURNS : N/A
 def resolveOutput(parser,request,msg):
+    fileMsg = ""
     # Check the mode and set msg accordingly
     if(parser.mode == argParser.MODE_JSON):
-        pass
+        fileMsg = msg
     if(parser.mode == argParser.MODE_SYSLOG):
-        msg = createSyslogOutput(request)
+        fileMsg = createSyslogOutput(request)
     else:
-        msg = createOutput(parser,request)
+        fileMsg = createOutput(parser,request)
     # Then write msg to the file
     write(parser.fileName,msg)
 
