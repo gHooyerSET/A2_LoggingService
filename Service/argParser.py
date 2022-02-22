@@ -11,6 +11,7 @@ import string
 HELP_FILE_PATH = "help.txt"
 DEFAULT_PORT = 8500
 DEFAULT_FILENAME = "a2log.txt"
+DEFAULT_FORMAT_FILE = "format.cfg"
 DEFAULT_MAX_CLIENTS = 1024
 ARG_JSON = "json"
 ARG_SYSLOG = "syslog"
@@ -21,6 +22,25 @@ INVALID_PORT = -1
 ARGS_ARRAY_OFFSET = 0
 ARG_OFFSET = 1
 
+def getFormat(str):
+    formatStr = ""
+    retValue = []
+    try:
+        # Try to open to format file
+        fFormat = open(str,"r")
+        # Read the format string from the file
+        formatStr = fFormat.read()
+        #
+        print("Reading format file " + str + " . . . ")
+        # Close the file
+        fFormat.close()
+    except:
+        # If the file can't be read, assume it's a format string
+        formatStr = str
+    # Split the format string up by whitespace
+    retValue = formatStr.split(' ')
+    return retValue
+    
 # NAME: ArgParser
 # PURPOSE : Parses command line arguments and displays information related to those arguments
 class ArgParser():
@@ -39,14 +59,17 @@ class ArgParser():
     # RETURNS : N/A
     staticmethod
     def  printHelpMessage():
-        # Open the text file with help information
-        fHelp = open(HELP_FILE_PATH,"r")
-        # Read the text from the file
-        helpMsg = fHelp.read()
-        # Display the contents to the screen
-        print(helpMsg)
-        # Close the file
-        fHelp.close()
+        try:
+            # Open the text file with help information
+            fHelp = open(HELP_FILE_PATH,"r")
+            # Read the text from the file
+            helpMsg = fHelp.read()
+            # Display the contents to the screen
+            print(helpMsg)
+            # Close the file
+            fHelp.close()
+        except Exception as e:
+            print(e)
     
     # FUNCTION : parseArgs
     # DESCRIPTION : Parses the user's command-line arguments and stores
@@ -92,7 +115,7 @@ class ArgParser():
                         ArgParser.mode = MODE_SYSLOG
                     else:
                         ArgParser.mode = MODE_CUSTOM
-                        ArgParser.outFormat = arg.split(' ')
+                        ArgParser.outFormat = getFormat(arg)
             # Check if the 'help message tag' was specified
             if(switch == "-h"):
                     ArgParser.printHelpMessage()
