@@ -55,7 +55,7 @@ def resolveOutput(parser,request,msg):
     else:
         fileMsg = createOutput(parser,request)
     # Then write msg to the file
-    write(parser.fileName,msg)
+    write(parser.fileName,fileMsg)
 
 # FUNCTION : getErrorType
 # DESCRIPTION : Uses an error level to return the matching error type
