@@ -76,6 +76,8 @@ namespace A2_TestClient
                             Console.WriteLine("\t7 Regular Valid Log\n");
                             Console.WriteLine("\t8 Regular Invalid Log\n");
                             Console.WriteLine("\t9 Regular Mixed Log\n");
+                            Console.WriteLine("\n");
+                            Console.WriteLine("\t10 Invalid Error Levels\n");
                             Console.WriteLine("Select Test:");
                             switch (Console.ReadLine())
                             {
@@ -131,7 +133,7 @@ namespace A2_TestClient
                                     int logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, -1, "Test");
+                                    Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, "Test");
                                     break;
 
                                 /************************* Test Invalid Log Field Permutations **************************/
@@ -143,7 +145,7 @@ namespace A2_TestClient
                                     logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.AllInvalidPermutatedFields(delay, logsToSend, InvalidLogger.invalidFieldTags, -1, "Test");
+                                    Tests.AllInvalidPermutatedFields(delay, logsToSend, InvalidLogger.invalidFieldTags, "Test");
                                     break;
 
                                 /************************* Test Mixed Field Permutations **************************/
@@ -155,7 +157,7 @@ namespace A2_TestClient
                                     logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.AllMixedPermutatedFields(delay, logsToSend, MixedLogger.fieldTags, -1, "Test");
+                                    Tests.AllMixedPermutatedFields(delay, logsToSend, MixedLogger.fieldTags, "Test");
                                     break;
 
                                 /************************* Test Regular Valid Log **************************/
@@ -211,10 +213,43 @@ namespace A2_TestClient
                                         Client.Send(MixedLogger.WriteLog(errorLevel, message));
                                     }
                                     break;
+
+                                /************************* Test Invalid Error Levels **************************/
+                                case "10":
+                                    Console.WriteLine("Enter delay time(ms): ");
+                                    delay = 0;
+                                    int.TryParse(Console.ReadLine(), out delay);
+                                    Console.WriteLine("Enter number of logs to send: ");
+                                    logsToSend = 0;
+                                    int.TryParse(Console.ReadLine(), out logsToSend);
+
+                                    // Change error level globals
+                                    Console.WriteLine("Enter invlaid minimum error level: ");
+                                    int.TryParse(Console.ReadLine(), out Tests.errorMin);
+                                    Console.WriteLine("Enter invlaid maximum error level: ");
+                                    int.TryParse(Console.ReadLine(), out Tests.errorMax);
+                                    if (Tests.errorMax < Tests.errorMin)
+                                    {
+                                        Console.WriteLine("Maximum invalid error level must be greater than minimum invalid error level");
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log and error level range: {2} - {3}", logsToSend, delay, Tests.errorMin, Tests.errorMax);
+                                        Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, "Test");
+                                    }
+
+                                    // Restore error level globals
+                                    Tests.errorMin = Tests.ERROR_MIN;
+                                    Tests.errorMax = Tests.ERROR_MAX;
+                                    break;
+
+
+                                default:
+                                    break;
                             }
                             Console.WriteLine("Continue testing?");
-                            Console.WriteLine("Press any key to continue, or press 'n' to return to main menu:");
-                            if (Console.ReadLine() == "n")
+                            Console.WriteLine("Press any key to continue, or press 'q' to return to main menu:");
+                            if (Console.ReadLine() == "q")
                             {
                                 break;
                             }
