@@ -55,7 +55,7 @@ namespace A2_TestClient
             invalidDevName = "-------";
             invalidAppName = "Invalid_App";
             invalidPId = -123312;
-            invalidErrorLvl = (int)ErrorCode.MAX + 1;
+            invalidErrorLvl = Tests.errorMax + 1;
             invalidMsg = "/n/t/n/t";
         }
 

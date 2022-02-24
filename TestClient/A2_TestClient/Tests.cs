@@ -8,6 +8,12 @@ namespace A2_TestClient
 {
     public static class Tests
     {
+        // Error code mins and maxs
+        public const int ERROR_MIN = -1;
+        public const int ERROR_MAX = 50000;
+        public static int errorMin = ERROR_MIN;
+        public static int errorMax = ERROR_MAX;
+
         // debugMode = true: prints log instead of sending it to server
         public static bool debugMode = false; 
 
@@ -83,17 +89,16 @@ namespace A2_TestClient
         /*
         * METHOD : AllValidPermutatedFields()
         *
-        * DESCRIPTION : Sends different permutations of valid inputted log fields
+        * DESCRIPTION : Sends different permutations of valid inputted log fields with a random error lvl in range
         * 
-        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message
+        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, string message
         *
         * RETURNS :NA
         */
-        public static void AllValidPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
+        public static void AllValidPermutatedFields(int delayTime, int numberOfMessages, string inputTags, string message)
         {
             string[] tags = inputTags.Split(' ');
             int numberOfTags = tags.Count();
-            var rand = new Random();
             int numberOfFieldsToExlclude = 0;
             // Create a list with every permutaion of our field tags
             IList<IList<string>> tagPermutations = Permute(tags);
@@ -109,7 +114,7 @@ namespace A2_TestClient
                 }
 
                 //Send custom log
-                CustomValidFields(string.Join("", list), errorLevel, message);
+                CustomValidFields(string.Join("", list), RandomErrorLvl(), message);
 
                 numberOfFieldsToExlclude++;
 
@@ -130,17 +135,16 @@ namespace A2_TestClient
         /*
         * METHOD : AllInvalidPermutatedFields()
         *
-        * DESCRIPTION : Sends different permutations of invalid inputted log fields
+        * DESCRIPTION : Sends different permutations of invalid inputted log fields with a random error lvl in range
         * 
-        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message
+        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, string message
         *
         * RETURNS :NA
         */
-        public static void AllInvalidPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
+        public static void AllInvalidPermutatedFields(int delayTime, int numberOfMessages, string inputTags, string message)
         {
             string[] tags = inputTags.Split(' ');
             int numberOfTags = tags.Count();
-            var rand = new Random();
             int numberOfFieldsToExlclude = 0;
             // Create a list with every permutaion of our field tags
             IList<IList<string>> tagPermutations = Permute(tags);
@@ -156,7 +160,7 @@ namespace A2_TestClient
                 }
 
                 //Send custom log
-                CustomInvalidFields(string.Join("", list), errorLevel, message);
+                CustomInvalidFields(string.Join("", list), RandomErrorLvl(), message);
 
                 numberOfFieldsToExlclude++;
 
@@ -177,17 +181,16 @@ namespace A2_TestClient
         /*
         * METHOD : AllMixedPermutatedFields()
         *
-        * DESCRIPTION : Sends different permutations of valid and invalid log fields
+        * DESCRIPTION : Sends different permutations of valid and invalid log fields, with a random error lvl in range
         * 
-        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message
+        * PARAMETERS : int delayTime, int numberOfMessages, string inputTags, string message
         *
         * RETURNS :NA
         */
-        public static void AllMixedPermutatedFields(int delayTime, int numberOfMessages, string inputTags, int errorLevel, string message)
+        public static void AllMixedPermutatedFields(int delayTime, int numberOfMessages, string inputTags, string message)
         {
             string[] tags = inputTags.Split(' ');
             int numberOfTags = tags.Count();
-            var rand = new Random();
             int numberOfFieldsToExlclude = 0;
             // Create a list with every permutaion of our field tags
             IList<IList<string>> tagPermutations = Permute(tags);
@@ -203,7 +206,7 @@ namespace A2_TestClient
                 }
 
                 //Send custom log
-                CustomMixedFields(string.Join("", list), errorLevel, message);
+                CustomMixedFields(string.Join("", list), RandomErrorLvl(), message);
 
                 numberOfFieldsToExlclude++;
 
@@ -283,6 +286,21 @@ namespace A2_TestClient
             var temp = a;
             a = b;
             b = temp;
+        }
+
+        /*
+        * METHOD : RandomErrorLvl
+        *
+        * DESCRIPTION : Produces a random error lvl within min and max
+        * 
+        * PARAMETERS : NA
+        *
+        * RETURNS : int randomErrorLvl
+        */
+        static int RandomErrorLvl()
+        {
+            var rand = new Random();
+            return rand.Next(Tests.errorMin, Tests.errorMax + 1);
         }
     }
 }

@@ -15,11 +15,6 @@ using System.Text;
 
 namespace A2_TestClient
 {
-    enum ErrorCode
-    {
-        DEFAULT = -1,
-        MAX = 50000,
-    }
 
     public class Logger
     {
@@ -57,7 +52,7 @@ namespace A2_TestClient
             pId = System.Diagnostics.Process.GetCurrentProcess().Id;
 
             // set error lvl to default
-            errorLvl = (int)ErrorCode.DEFAULT;
+            errorLvl = Tests.errorMin;
 
             // get message
             msg = "None";
@@ -98,10 +93,10 @@ namespace A2_TestClient
             pId = System.Diagnostics.Process.GetCurrentProcess().Id;
 
             // get error lvl
-            if(getErrorLvl > (int)ErrorCode.MAX || getErrorLvl < (int)ErrorCode.DEFAULT)
+            if(getErrorLvl > Tests.errorMax || getErrorLvl < Tests.errorMin)
             {
                 // Set to default if error level out of bounds
-                getErrorLvl = (int)ErrorCode.DEFAULT;
+                getErrorLvl = Tests.errorMin;
             }
             errorLvl = getErrorLvl;
 

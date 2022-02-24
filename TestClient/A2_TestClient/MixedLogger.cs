@@ -53,10 +53,10 @@ namespace A2_TestClient
             time = DateTime.Now.ToString("hh:mm:ss");
             appName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
             // get error lvl
-            if (getErrorLvl > (int)ErrorCode.MAX || getErrorLvl < (int)ErrorCode.DEFAULT)
+            if (getErrorLvl > Tests.errorMax || getErrorLvl < Tests.errorMin)
             {
                 // Set to default if error level out of bounds
-                getErrorLvl = (int)ErrorCode.DEFAULT;
+                getErrorLvl = Tests.errorMin;
             }
             errorLvl = getErrorLvl;
 
