@@ -17,6 +17,7 @@ namespace A2_TestClient
 {
     public static class Client
     {
+        // Network defaults
         public static string ip = "10.169.92.240"; // Ip address of server
         public static int port = 8500; // Port of server
 
