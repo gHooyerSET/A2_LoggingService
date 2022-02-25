@@ -29,6 +29,7 @@ SWITCH_PERIOD = "-pr"
 SWITCH_OUTPUT = "-o"
 SWITCH_FORMAT = "-f"
 SWITCH_HELP = "-h"
+YES = 'y'
 
 def getFormat(str):
     formatStr = ""
@@ -43,8 +44,22 @@ def getFormat(str):
         # Close the file
         fFormat.close()
     except:
-        # If the file can't be read, assume it's a format string
-        formatStr = str
+        # Ask the user if they meant to use a format string
+        c = input("File not found. Did you intend to type a format string manually? (y/n) : ")
+        # If yes, then set formatStr to the arg
+        if (c == YES):            
+            formatStr = str
+            print("Format string set...")
+        # Otherwise, ask them if they would like to
+        else:
+            c = input("Would you like to enter a format string? (y/n) : ")
+            if (c == YES):
+                formatStr = input("Enter a format string : ")
+                print("Format string set...")
+            else:
+                ArgParser.mode = MODE_JSON
+                print("Defaulting to JSON mode...")
+                
     # Split the format string up by whitespace
     retValue = formatStr.split(' ')
     return retValue
