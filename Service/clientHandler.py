@@ -20,6 +20,7 @@ CLIENT_NOT_FOUND = -1
 ALLOWANCE_CUTTOFF_SECONDS = 1.0
 CLIENT_SESSION_TIMEOUT = 30.0
 TIME_BETWEEN_CLEANUP = 15
+PID_CUTOFF = 0
 clientList = []
 
 # NAME: Request
@@ -152,7 +153,7 @@ def cleanClients():
 # PARAMETERS : sock - socket.socket -  The client socket
 #              parser - argParser.ArgParser - The argParser.ArgParser object
 # RETURNS : N/A
-def handleClient(sock, parser):
+def handleClient(sock, parser, address):
     fileName = parser.fileName
     response = None
     try:
@@ -171,26 +172,56 @@ def handleClient(sock, parser):
         client = Client.findClient(request.clientId)
         # If the rate limiter returns true, write to the log
         if Client.rateLimiter(client) == True:
-            # Then create our response
-            response = "Log entry created".encode()
+            # Clean the request
+            request = checkRequest(request,address)
+            # Reset the dictionary to the new request
+            request_dict = request.__dict__            
+            # Set the msg to a serialized version of the current request
+            # The default tag turns any non-serializable items into strings
+            msg = json.dumps(request_dict,default=str)
             # Create file write thread
-            writeThread = threading.Thread(target = fileHandler.resolveOutput, args = (parser,request, msg))
+            writeThread = threading.Thread(target = fileHandler.resolveOutput, args = (parser,request,msg))
             # Start the thread
             writeThread.start()
             # There's no need to join as the thread will terminate on its own
             # and we don't want to wait for it to finish
+            # Then create our response
+            response = "Log entry created.".encode()
         else:
             response = "Rate limited for client".encode()
-            print("Rate limited for Client " + client.clientId)
+            print("Rate limited for Client " + client.clientId + "\n")
         # Send a response message
         sock.send(response)        
         # Print a disconnect message
-        print("Disconnected from client.")
+        print("Disconnected from client.\n")
     except Exception as e:
         # If any operation fails, print our exception message
         print(e)
     finally:
         # Then close the socket
         sock.close()
-    
-    
+
+# FUNCTION : checkRequest
+# DESCRIPTION : Cleans up a request that may have default values left in it to provide
+#               better information.
+# PARAMETERS : request - Request - The client's request
+#              address - address - The client's IP information
+# RETURNS : N/A   
+def checkRequest(request, address):
+    # Check if the value is default, and
+    # if so, overwrite it
+    if request.date == None:
+        request.date = datetime.utcnow().date()
+    if request.time == None:
+        request.time = datetime.utcnow().time()
+    if request.devName == None:
+        request.devName = "Unknown device @" + str(address)
+    if request.appName == None:
+        request.appName = "Unknown application @ " + str(address)
+    if request.pId <= PID_CUTOFF:
+        request.pId = "ERROR NO PID PROVIDED"
+    if request.errorLvl < fileHandler.LOGLEVEL_DEBUG_FLOOR or request.errorLvl > fileHandler.LOGLEVEL_CEILING:
+        request.errorLvl = fileHandler.LOGLEVEL_DEBUG_FLOOR
+    if request.msg == None:
+        request.msg = "No message provided."
+    return request

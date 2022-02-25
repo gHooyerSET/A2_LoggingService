@@ -12,6 +12,8 @@ Format: "switch" <argType>
 -p <int>	- Specifies the desired port # for the service
 -c <int> 	- Sets the maximum # of clients that can connect
 -o <string>	- Sets the path for the output file
+-r <int>	- Sets the rate (# of messages) for the rate limiting
+-pr <int>	- Sets the period (in seconds) for the rate limiting
 -f <string> - Sets the message format
 	Arguments:
 	json 	- Sets the message format to JSON

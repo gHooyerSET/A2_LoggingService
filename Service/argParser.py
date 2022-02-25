@@ -7,6 +7,7 @@
 #               assignment.
 
 import string
+import clientHandler
 
 HELP_FILE_PATH = "help.txt"
 DEFAULT_PORT = 8500
@@ -21,6 +22,13 @@ MODE_CUSTOM = 2
 INVALID_PORT = -1
 ARGS_ARRAY_OFFSET = 0
 ARG_OFFSET = 1
+SWITCH_PORT = "-p"
+SWITCH_CLIENTS = "-c"
+SWITCH_RATE = "-r"
+SWITCH_PERIOD = "-pr"
+SWITCH_OUTPUT = "-o"
+SWITCH_FORMAT = "-f"
+SWITCH_HELP = "-h"
 
 def getFormat(str):
     formatStr = ""
@@ -86,7 +94,7 @@ class ArgParser():
             if(i < length - ARG_OFFSET and length != ARG_OFFSET):
                 arg = args[ARGS_ARRAY_OFFSET][i + ARG_OFFSET]
                 # Check for a custom port setting
-                if(switch == "-p"):
+                if(switch == SWITCH_PORT):
                     try:
                         # Try to parse the port
                         self.port = int(arg)
@@ -94,7 +102,7 @@ class ArgParser():
                         # Display an error on failure
                         print("Failed to parse port.\n")
                 # Check for a custom # of max clients
-                elif(switch == "-c"):
+                elif(switch == SWITCH_CLIENTS):
                     try:
                         # Try to parse the maximum # of clients
                         self.maxClients = int(arg)
@@ -102,11 +110,11 @@ class ArgParser():
                         # Display an error on failure
                         print("Failed to parse max clients.\n")
                 # See if they desire to change the output filename
-                elif(switch == "-o"):
+                elif(switch == SWITCH_OUTPUT):
                     # Set the filename to the arg
                     self.fileName = arg
                 # Check for a format switch tag
-                elif(switch == "-f"):
+                elif(switch == SWITCH_FORMAT):
                     if (arg == ARG_JSON):
                         # Set the output mode to JSON
                         ArgParser.mode = MODE_JSON
@@ -116,7 +124,11 @@ class ArgParser():
                     else:
                         ArgParser.mode = MODE_CUSTOM
                         ArgParser.outFormat = getFormat(arg)
+                elif(switch == SWITCH_RATE):
+                        clientHandler.Client.rate = int(arg)
+                elif(switch == SWITCH_PERIOD):
+                        clientHandler.Client.period = int(arg)
             # Check if the 'help message tag' was specified
-            if(switch == "-h"):
+            if(switch == SWITCH_HELP):
                     ArgParser.printHelpMessage()
                     ArgParser.displayedHelp = True

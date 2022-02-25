@@ -29,6 +29,13 @@ def startServer(parser):
     
     print("Selected Port : " + str(parser.port))
     print("Max Clients : "+ str(parser.maxClients))
+    print("Rate: " + str(clientHandler.Client.rate))
+    print("Period: " + str(clientHandler.Client.period) + "(s)")
+
+    #Calculate messages / second
+    mPS = clientHandler.Client.rate / clientHandler.Client.period
+
+    print("Limit: " + str(mPS) + "(l/s)")
 
     cleanupStarted = False
 
@@ -41,7 +48,7 @@ def startServer(parser):
     # Set the max number of clients
     sock.listen(parser.maxClients)    
     # Print a 'ready' message
-    print("Server listening...")
+    print("\nServer listening...\n")
     # loop waiting for connections
     try:
         while True:
@@ -50,9 +57,9 @@ def startServer(parser):
             # Accept the connection
             cSock, address = sock.accept( )
             # Display a connected message
-            print(str(address) + " connected.\n")
+            print(str(address) + " connected.")
             # Create the new client thread
-            clientThread = threading.Thread(target = clientHandler.handleClient, args = (cSock, parser))
+            clientThread = threading.Thread(target = clientHandler.handleClient, args = (cSock, parser, address))
             # Start the client thread
             clientThread.start()
     except Exception as e:
