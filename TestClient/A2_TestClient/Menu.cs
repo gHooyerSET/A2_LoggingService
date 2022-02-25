@@ -133,7 +133,7 @@ namespace A2_TestClient
                                     int logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, "Test");
+                                    Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, "All Valid Log Field Permutations. # of Logs:" +  logsToSend + " delay(ms):" + delay);
                                     break;
 
                                 /************************* Test Invalid Log Field Permutations **************************/
@@ -145,7 +145,7 @@ namespace A2_TestClient
                                     logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.AllInvalidPermutatedFields(delay, logsToSend, InvalidLogger.invalidFieldTags, "Test");
+                                    Tests.AllInvalidPermutatedFields(delay, logsToSend, InvalidLogger.invalidFieldTags, "All Invalid Log Field Permutations. # of Logs:" + logsToSend + " delay(ms):" + delay);
                                     break;
 
                                 /************************* Test Mixed Field Permutations **************************/
@@ -157,7 +157,7 @@ namespace A2_TestClient
                                     logsToSend = 0;
                                     int.TryParse(Console.ReadLine(), out logsToSend);
                                     Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log", logsToSend, delay);
-                                    Tests.AllMixedPermutatedFields(delay, logsToSend, MixedLogger.fieldTags, "Test");
+                                    Tests.AllMixedPermutatedFields(delay, logsToSend, MixedLogger.fieldTags, "Mixed Valid and Invalid Log Field Permutations. # of Logs:" + logsToSend + " delay(ms):" + delay);
                                     break;
 
                                 /************************* Test Regular Valid Log **************************/
@@ -214,7 +214,7 @@ namespace A2_TestClient
                                     }
                                     break;
 
-                                /************************* Test Invalid Error Levels **************************/
+                                /************************* Test Error Levels **************************/
                                 case "10":
                                     Console.WriteLine("Enter delay time(ms): ");
                                     delay = 0;
@@ -224,9 +224,9 @@ namespace A2_TestClient
                                     int.TryParse(Console.ReadLine(), out logsToSend);
 
                                     // Change error level globals
-                                    Console.WriteLine("Enter invlaid minimum error level: ");
+                                    Console.WriteLine("Enter invalid minimum error level: ");
                                     int.TryParse(Console.ReadLine(), out Tests.errorMin);
-                                    Console.WriteLine("Enter invlaid maximum error level: ");
+                                    Console.WriteLine("Enter invalid maximum error level: ");
                                     int.TryParse(Console.ReadLine(), out Tests.errorMax);
                                     if (Tests.errorMax < Tests.errorMin)
                                     {
@@ -235,7 +235,7 @@ namespace A2_TestClient
                                     else
                                     {
                                         Console.WriteLine("Sending {0} logs with a {1}(ms) delay between each log and error level range: {2} - {3}", logsToSend, delay, Tests.errorMin, Tests.errorMax);
-                                        Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, "Test");
+                                        Tests.AllValidPermutatedFields(delay, logsToSend, Logger.fieldTags, "Error level testing. # of Logs:" + logsToSend + " delay(ms):" + delay + " error level rage:" + Tests.errorMin + "-" + Tests.errorMax);
                                     }
 
                                     // Restore error level globals
