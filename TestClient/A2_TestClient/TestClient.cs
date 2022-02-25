@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+* FILE : TestClient.cs
+* PROJECT : SENG2040_A3 SERVICES AND LOGGING
+* PROGRAMMER : Nathan Domingo
+* FIRST VERSION : 2022-02-17
+* DESCRIPTION : Driver for our test client
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +18,6 @@ namespace A2_TestClient
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine("{0}", Logger.WriteLog(90000,"Error! Something went wrong!"));
-            //Tests.TestFields(500, 10);
-            //Console.ReadLine();
-            //Client.Send(Logger.WriteLog(1, "hello"));
-            //Tests.TestValidFields(1000, 100);
-            // Run Console Ment
             bool displayMenu = true;
             while(displayMenu)
             {

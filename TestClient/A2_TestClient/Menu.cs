@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+* FILE : Menu.cs
+* PROJECT : SENG2040_A3 SERVICES AND LOGGING
+* PROGRAMMER : Nathan Domingo
+* FIRST VERSION : 2022-02-17
+* DESCRIPTION : Command line menu for testing logger 
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +20,13 @@ namespace A2_TestClient
         const string DEBUG_MODE = "3";
         const string QUIT = "q";
 
+        /*
+        * METHOD :MainMenu()
+        * 
+        * PARAMETERS : NA
+        * 
+        * DESCRIPTION : Main menu for testing out logger in various ways
+        */
         // https://wellsb.com/csharp/beginners/create-menu-csharp-console-application
         public static bool MainMenu()
         {

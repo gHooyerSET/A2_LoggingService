@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+* FILE : Tests.cs
+* PROJECT : SENG2040_A3 SERVICES AND LOGGING
+* PROGRAMMER : Nathan Domingo
+* FIRST VERSION : 2022-02-17
+* DESCRIPTION : Contains functions for testing Logger and associated classes
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,15 +22,14 @@ namespace A2_TestClient
         public static int errorMax = ERROR_MAX;
 
         // debugMode = true: prints log instead of sending it to server
-        public static bool debugMode = false; 
+        public static bool debugMode = false;
 
         /*
-        * METHOD : CustomFields()
+        * METHOD : CustomValidFields()
         *
         * DESCRIPTION : Sends custom combinations of valid inputted log fields
         * 
-        * PARAMETERS : int delayTime : Time between each messsage in ms
-        *              int numberOfMessages : Number of messages to send
+        * PARAMETERS : string fieldTags, int errorLevel, string message
         *
         * RETURNS :NA
         */
@@ -45,8 +51,7 @@ namespace A2_TestClient
         *
         * DESCRIPTION : Sends custom combinations of invalid inputted log fields
         * 
-        * PARAMETERS : int delayTime : Time between each messsage in ms
-        *              int numberOfMessages : Number of messages to send
+        * PARAMETERS : string fieldTags, int errorLevel, string message
         *
         * RETURNS :NA
         */
@@ -68,8 +73,7 @@ namespace A2_TestClient
         *
         * DESCRIPTION : Sends custom combinations of valid OR invalid inputted log fields
         * 
-        * PARAMETERS : int delayTime : Time between each messsage in ms
-        *              int numberOfMessages : Number of messages to send
+        * PARAMETERS : string fieldTags, int errorLevel, string message
         *
         * RETURNS :NA
         */

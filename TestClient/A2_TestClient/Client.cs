@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+* FILE : Client.cs
+* PROJECT : SENG2040_A3 SERVICES AND LOGGING
+* PROGRAMMER : Nathan Domingo
+* FIRST VERSION : 2022-02-17
+* DESCRIPTION : Client functions and defaults for connecting with logging server
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;

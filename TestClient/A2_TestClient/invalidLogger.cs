@@ -1,10 +1,9 @@
 ﻿/*
-* FILE : Logger.cs
+* FILE : InvalidLogger.cs
 * PROJECT : SENG2040_A3 SERVICES AND LOGGING
 * PROGRAMMER : Nathan Domingo
 * FIRST VERSION : 2022-02-17
-* DESCRIPTION : Hilo Class contains the logic behind the game as well as data storage for
-*               each user session.
+* DESCRIPTION : Contains functions for a Logger with invalid fields
 */
 using Newtonsoft.Json;
 using System;
